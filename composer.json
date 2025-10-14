@@ -33,6 +33,5 @@
     "sparktro"
   ],
   "minimum-stability": "dev",
-  "prefer-stable": true,
-  "version": "v1"
+  "prefer-stable": true
 }
