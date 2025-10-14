@@ -2,15 +2,14 @@
 
 namespace Sparktro\Installer\Http\Controllers;
 
-use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class SystemCheckController extends Controller
 {
@@ -31,10 +30,10 @@ class SystemCheckController extends Controller
             'Writable storage/framework/' => is_writable(storage_path('framework')),
             'Writable storage/logs/' => is_writable(storage_path('logs')),
             'Writable bootstrap/cache/' => is_writable(base_path('bootstrap/cache')),
-            'Writable .env' => !File::exists(base_path('.env')) || is_writable(base_path('.env')),
+            'Writable .env' => ! File::exists(base_path('.env')) || is_writable(base_path('.env')),
         ];
 
-        $allRequirementsMet = !in_array(false, $requirements, true);
+        $allRequirementsMet = ! in_array(false, $requirements, true);
 
         return view('installer::installer.welcome', compact('requirements', 'allRequirementsMet'));
     }
@@ -47,115 +46,131 @@ class SystemCheckController extends Controller
 
     // In your InstallerController or wherever this method resides
 
-public function environmentSet(Request $request)
-{
+    public function environmentSet(Request $request)
+    {
 
-    $data = $request->validate([
-        // Application Identity
-        'application_url' => 'required|string|max:255', // * Required in form
-        'app_name' => 'required|string|max:255',        // * Required in form
+        $data = $request->validate([
+            // Application Identity
+            'application_url' => 'required|string|max:255', // * Required in form
+            'app_name' => 'required|string|max:255',        // * Required in form
 
-        // License Details
-        'domain_name' => 'required|string|max:255',      // * Required in form
-        'codecanyon_username' => 'required|string|max:255', // * Required in form
-        'codecanyon_license_key' => 'required|string|max:255', // * Required in form
+            // License Details
+            'domain_name' => 'required|string|max:255',      // * Required in form
+            'codecanyon_username' => 'required|string|max:255', // * Required in form
+            'codecanyon_license_key' => 'required|string|max:255', // * Required in form
 
-        // Database Connection
-        'db_host' => 'required|string',                  // * Required in form
-        'db_port' => 'required|numeric',                 // * Required in form
-        'db_user' => 'required|string',                  // * Required in form (using db_user)
-        'db_name' => 'required|string',                  // * Required in form (using db_name)
-        'db_pass' => 'required|string',                  // Matches form: optional, with helper text
-    ],
-    [
-        // 2. Custom Error Messages (Optional, but helpful for clarity)
-        'application_url.required' => 'The Application URL is essential and cannot be empty.',
-        'app_name.required' => 'The Application Name field is required.',
-        'domain_name.required' => 'The Domain Name is required for license validation.',
-        'codecanyon_username.required' => 'Your Envato/CodeCanyon Username is required.',
-        'codecanyon_license_key.required' => 'The CodeCanyon License Key (Purchase Code) is required.',
-        'db_host.required' => 'The Database Host (e.g., 127.0.0.1) is required.',
-        'db_port.required' => 'The Database Port (e.g., 3306) is required.',
-        'db_user.required' => 'The Database User is required.',
-        'db_name.required' => 'The Database Name is required.',
-    ]);
+            // Database Connection
+            'db_host' => 'required|string',                  // * Required in form
+            'db_port' => 'required|numeric',                 // * Required in form
+            'db_user' => 'required|string',                  // * Required in form (using db_user)
+            'db_name' => 'required|string',                  // * Required in form (using db_name)
+            'db_pass' => 'required|string',                  // Matches form: optional, with helper text
+        ],
+            [
+                // 2. Custom Error Messages (Optional, but helpful for clarity)
+                'application_url.required' => 'The Application URL is essential and cannot be empty.',
+                'app_name.required' => 'The Application Name field is required.',
+                'domain_name.required' => 'The Domain Name is required for license validation.',
+                'codecanyon_username.required' => 'Your Envato/CodeCanyon Username is required.',
+                'codecanyon_license_key.required' => 'The CodeCanyon License Key (Purchase Code) is required.',
+                'db_host.required' => 'The Database Host (e.g., 127.0.0.1) is required.',
+                'db_port.required' => 'The Database Port (e.g., 3306) is required.',
+                'db_user.required' => 'The Database User is required.',
+                'db_name.required' => 'The Database Name is required.',
+            ]);
 
-    $envData = [
-        // Database
-        'DB_CONNECTION' => 'mysql',
-        'DB_HOST' => $data['db_host'],
-        'DB_PORT' => $data['db_port'],
-        'DB_DATABASE' => $data['db_name'],      // Mapped from db_name
-        'DB_USERNAME' => $data['db_user'],      // Mapped from db_user
-        'DB_PASSWORD' => $data['db_pass'] ?? '', // Mapped from db_pass
-        'APP_DB' => 'true',
+        $envData = [
+            // Database
+            'DB_CONNECTION' => 'mysql',
+            'DB_HOST' => $data['db_host'],
+            'DB_PORT' => $data['db_port'],
+            'DB_DATABASE' => $data['db_name'],      // Mapped from db_name
+            'DB_USERNAME' => $data['db_user'],      // Mapped from db_user
+            'DB_PASSWORD' => $data['db_pass'] ?? '', // Mapped from db_pass
+            'APP_DB' => 'true',
 
-        // Application/License
-        'APP_NAME' => $data['app_name'],
-        'APP_URL' => $data['application_url'],
-        'CODECANYON_USERNAME' => $data['codecanyon_username'],
-        'CODECANYON_LICENSE' => $data['codecanyon_license_key'],
-    ];
-
-    try {
-        // Your existing environment logic
-        $this->ensureEnv();
-        $this->setEnv($envData);
-
-        Artisan::call('config:clear');
-        Artisan::call('cache:clear');
-        Artisan::call('route:clear');
-
-        // Test DB connection
-        config([
-            'database.default' => 'mysql',
-            'database.connections.mysql.host' => $envData['DB_HOST'],
-            'database.connections.mysql.port' => $envData['DB_PORT'],
-            'database.connections.mysql.database' => $envData['DB_DATABASE'],
-            'database.connections.mysql.username' => $envData['DB_USERNAME'],
-            'database.connections.mysql.password' => $envData['DB_PASSWORD'],
-        ]);
-
+            // Application/License
+            'APP_NAME' => $data['app_name'],
+            'APP_URL' => $data['application_url'],
+            'CODECANYON_USERNAME' => $data['codecanyon_username'],
+            'CODECANYON_LICENSE' => $data['codecanyon_license_key'],
+        ];
 
         try {
-            DB::connection()->getPdo(); // Triggers the actual connection attempt
-            Log::info('Database connection test successful', ['host' => $envData['DB_HOST'], 'database' => $envData['DB_DATABASE']]);
-        } catch (\PDOException $e) {
-             throw new Exception("Database Connection Failed: " . $e->getMessage());
+            // Your existing environment logic
+            $this->ensureEnv();
+            $this->setEnv($envData);
+
+            Artisan::call('config:clear');
+            Artisan::call('cache:clear');
+            Artisan::call('route:clear');
+
+            // Test DB connection
+            config([
+                'database.default' => 'mysql',
+                'database.connections.mysql.host' => $envData['DB_HOST'],
+                'database.connections.mysql.port' => $envData['DB_PORT'],
+                'database.connections.mysql.database' => $envData['DB_DATABASE'],
+                'database.connections.mysql.username' => $envData['DB_USERNAME'],
+                'database.connections.mysql.password' => $envData['DB_PASSWORD'],
+            ]);
+
+            try {
+                DB::connection()->getPdo(); // Triggers the actual connection attempt
+                Log::info('Database connection test successful', ['host' => $envData['DB_HOST'], 'database' => $envData['DB_DATABASE']]);
+            } catch (\PDOException $e) {
+                throw new Exception('Database Connection Failed: '.$e->getMessage());
+            }
+
+            $request->session()->put('installer_data', $envData);
+
+            return redirect()->route('install.admin.form')->with('success', 'Environment settings saved and database connected successfully.');
+
+        } catch (Exception $e) {
+            Log::error('Environment setup failed: '.$e->getMessage());
+
+            return back()->with('error', $e->getMessage())->withInput();
         }
-
-
-        $request->session()->put('installer_data', $envData);
-
-        return redirect()->route('install.admin.form')->with('success', 'Environment settings saved and database connected successfully.');
-
-    } catch (Exception $e) {
-        Log::error('Environment setup failed: ' . $e->getMessage());
-        return back()->with('error', $e->getMessage())->withInput();
     }
-}
 
     public function adminForm()
     {
         return view('installer::installer.admin');
     }
 
+    public function setupDatabase(Request $request)
+    {
+        try {
+            // Run Migration and Seeding (as discussed in the previous response)
+            $exitCode = Artisan::call('migrate:fresh', [
+                '--force' => true,
+                '--seed' => true,
+            ]);
+
+            if ($exitCode !== 0) {
+                $output = Artisan::output();
+                throw new Exception('Migration/Seeding failed. Output: '.$output);
+            }
+
+            $request->session()->put('db_migration_complete', true);
+
+            return redirect()->route('install.admin.form')->with('success', 'Database setup completed successfully. Please create the administrator account.');
+
+        } catch (Exception $e) {
+            // Clear config/cache after failure attempt
+            Artisan::call('config:clear');
+
+            return back()->with('error', 'Database setup failed: '.$e->getMessage());
+        }
+    }
+
     public function adminStore(Request $request)
     {
 
-        $exitCode = Artisan::call('migrate:fresh', [
-            '--force' => true,
-            '--seed' => true,
-        ]);
-
-        // Check for non-zero exit code (failure)
-        if ($exitCode !== 0) {
-            $output = Artisan::output();
-            throw new Exception("Migration/Seeding failed. Output: " . $output);
+        if (! $request->session()->get('db_migration_complete')) {
+            Log::warning('Attempt to create admin user before DB migration');
+            return redirect()->back()->with('error', 'Please complete the database setup before creating an admin user.');
         }
-
-        // Optional: Ensure the final DB check passes
-        DB::connection()->getPdo();
 
         Log::info('Migration and seeding completed successfully.');
 
@@ -172,13 +187,13 @@ public function environmentSet(Request $request)
                 'password' => Hash::make($request->password),
                 'role_id' => 1,
                 'can_login' => 1,
-                'status' => 1
+                'status' => 1,
             ]);
 
             $this->setEnv([
                 'SESSION_DRIVER' => 'database',
                 'CACHE_STORE' => 'database',
-                'APP_DB_SYNC' => 'true'
+                'APP_DB_SYNC' => 'true',
             ]);
 
             Artisan::call('config:clear');
@@ -186,7 +201,7 @@ public function environmentSet(Request $request)
 
             return redirect()->route('install.finish')->with('success', 'Admin user created successfully.');
         } catch (Exception $e) {
-            return back()->withErrors(['admin' => 'Failed to create admin user: ' . $e->getMessage()])->withInput();
+            return back()->withErrors(['admin' => 'Failed to create admin user: '.$e->getMessage()])->withInput();
         }
     }
 
@@ -196,6 +211,7 @@ public function environmentSet(Request $request)
 
         if (empty($data)) {
             Log::warning('No installer data found in session, redirecting to environment');
+
             return redirect()->route('install.environment');
         }
 
@@ -215,8 +231,9 @@ public function environmentSet(Request $request)
             return redirect()->route('install.admin.form')
                 ->with('success', 'Migrations and seeders ran successfully.');
         } catch (Exception $e) {
-            Log::error('Migration failed: ' . $e->getMessage());
-            return back()->with('error', 'Migration failed: ' . $e->getMessage());
+            Log::error('Migration failed: '.$e->getMessage());
+
+            return back()->with('error', 'Migration failed: '.$e->getMessage());
         }
     }
 
@@ -225,8 +242,9 @@ public function environmentSet(Request $request)
         try {
             $sqlPath = base_path('database/factories/application.sql');
 
-            if (!File::exists($sqlPath)) {
+            if (! File::exists($sqlPath)) {
                 Log::warning('SQL file not found, redirecting to migrate');
+
                 return redirect()->route('install.migrate');
             }
 
@@ -236,12 +254,11 @@ public function environmentSet(Request $request)
             return redirect()->route('install.admin.form')
                 ->with('success', 'Database imported successfully.');
         } catch (Exception $e) {
-            Log::error('Database import failed: ' . $e->getMessage());
-            return back()->with('error', 'Database import failed: ' . $e->getMessage());
+            Log::error('Database import failed: '.$e->getMessage());
+
+            return back()->with('error', 'Database import failed: '.$e->getMessage());
         }
     }
-
-
 
     public function finish()
     {
@@ -273,18 +290,18 @@ public function environmentSet(Request $request)
         ];
 
         foreach ($paths as $path) {
-            if (!File::exists($path)) {
+            if (! File::exists($path)) {
                 File::makeDirectory($path, 0775, true);
             }
-            $gitignore = $path . '/.gitignore';
-            if (!File::exists($gitignore)) {
+            $gitignore = $path.'/.gitignore';
+            if (! File::exists($gitignore)) {
                 File::put($gitignore, "*\n!.gitignore\n");
             }
             @chmod($path, 0775);
         }
 
         $logFile = storage_path('logs/laravel.log');
-        if (!File::exists($logFile)) {
+        if (! File::exists($logFile)) {
             File::put($logFile, '');
         }
         chmod($logFile, 0666);
@@ -314,8 +331,8 @@ public function environmentSet(Request $request)
 
     private function importSqlFile(string $filePath)
     {
-        if (!File::exists($filePath)) {
-            throw new Exception("SQL file not found");
+        if (! File::exists($filePath)) {
+            throw new Exception('SQL file not found');
         }
 
         $handle = fopen($filePath, 'r');
@@ -325,7 +342,7 @@ public function environmentSet(Request $request)
         while (($line = fgets($handle)) !== false) {
             $lineNumber++;
             $trimmedLine = trim($line);
-            if ($trimmedLine === '' || str_starts_with($trimmedLine, ['--','#','/*'])) {
+            if ($trimmedLine === '' || str_starts_with($trimmedLine, ['--', '#', '/*'])) {
                 continue;
             }
 
@@ -351,7 +368,7 @@ public function environmentSet(Request $request)
         $envPath = base_path('.env');
         $envExamplePath = base_path('.env.example');
 
-        if (!File::exists($envPath)) {
+        if (! File::exists($envPath)) {
             if (File::exists($envExamplePath)) {
                 File::copy($envExamplePath, $envPath);
                 Log::info('.env created from .env.example');

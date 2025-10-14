@@ -19,6 +19,9 @@ if (!$isInstalled) {
 
             Route::match(['get'], '/admin', [SystemCheckController::class, 'adminForm'])->name('admin.form');
 
+            Route::post('database-setup', [SystemCheckController::class, 'setupDatabase'])->name('database.setup');
+
+
             Route::match(['post'], '/admin/store', [SystemCheckController::class, 'adminStore'])->name('admin.store');
 
             Route::match(['get', 'post'], '/migrate', [SystemCheckController::class, 'migrate'])->name('migrate');
