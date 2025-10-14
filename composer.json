@@ -1,5 +1,5 @@
 {
-  "name": "sparktro/ignite",
+  "name": "laravel/ignite",
   "description": "Sparktro Laravel App Installer Package",
   "type": "library",
   "license": "MIT",
@@ -25,7 +25,7 @@
       ]
     }
   },
-  "homepage": "https://github.com/mhannan-dev/sparktro-installer",
+  "homepage": "https://github.com/mhannan-dev/ignite",
   "keywords": [
     "laravel",
     "installer",
@@ -34,5 +34,5 @@
   ],
   "minimum-stability": "dev",
   "prefer-stable": true,
-  "version": "v9.2"
+  "version": "v1"
 }
