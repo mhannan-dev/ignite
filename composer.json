@@ -1,5 +1,5 @@
 {
-  "name": "app/ignite",
+  "name": "lara/ignite",
   "description": "Sparktro Laravel App Installer Package",
   "type": "library",
   "license": "MIT",
