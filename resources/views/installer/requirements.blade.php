@@ -13,7 +13,7 @@
         <h5 class="text-primary mb-3">Application Identity</h5>
         <div class="row g-3 mb-3">
             <div class="col-md-6">
-                <label for="application_url" class="form-label small fw-medium text-secondary">Application URL</label>
+                <label for="application_url" class="form-label small fw-medium text-secondary">Application URL <span class="text-danger">*</span></label>
                 <input type="text" id="application_url" name="application_url"
                     class="form-control"
                     value="{{ rtrim(str_replace('/public', '', request()->getSchemeAndHttpHost()), '/') }}" readonly
@@ -39,7 +39,7 @@
         <h5 class="text-primary mb-3">License Details</h5>
         <div class="row g-3 mb-3">
             <div class="col-md-6">
-                <label for="domain_name" class="form-label small fw-medium text-secondary">Domain Name (Current Host)</label>
+                <label for="domain_name" class="form-label small fw-medium text-secondary">Domain Name (Current Host)<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <span class="material-icons">language</span>
@@ -51,7 +51,7 @@
             </div>
 
             <div class="col-md-6">
-                <label for="codecanyon_username" class="form-label small fw-medium text-secondary">CodeCanyon Username</label>
+                <label for="codecanyon_username" class="form-label small fw-medium text-secondary">CodeCanyon Username<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <span class="material-icons">person</span>
@@ -83,7 +83,7 @@
 
         <div class="row g-3 mb-3">
             <div class="col-md-4">
-                <label for="db_host" class="form-label small fw-medium text-secondary">Database Host</label>
+                <label for="db_host" class="form-label small fw-medium text-secondary">Database Host<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <span class="material-icons">storage</span>
@@ -95,7 +95,7 @@
             </div>
 
             <div class="col-md-4">
-                <label for="db_port" class="form-label small fw-medium text-secondary">Database Port</label>
+                <label for="db_port" class="form-label small fw-medium text-secondary">Database Port<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <span class="material-icons">settings_input_component</span>
@@ -107,7 +107,7 @@
             </div>
 
             <div class="col-md-4">
-                <label for="db_user" class="form-label small fw-medium text-secondary">Database User</label>
+                <label for="db_user" class="form-label small fw-medium text-secondary">Database User<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <span class="material-icons">account_circle</span>
@@ -121,7 +121,7 @@
 
         <div class="row g-3 mb-3">
             <div class="col-md-6">
-                <label for="db_name" class="form-label small fw-medium text-secondary">Database Name</label>
+                <label for="db_name" class="form-label small fw-medium text-secondary">Database Name<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <span class="material-icons">dvr</span>
@@ -133,7 +133,7 @@
             </div>
 
             <div class="col-md-6">
-                <label for="db_pass" class="form-label small fw-medium text-secondary">Database Password</label>
+                <label for="db_pass" class="form-label small fw-medium text-secondary">Database Password<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <span class="material-icons">lock</span>

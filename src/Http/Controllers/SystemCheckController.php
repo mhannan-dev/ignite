@@ -45,64 +45,149 @@ class SystemCheckController extends Controller
         return view('installer::installer.requirements');
     }
 
-    public function environmentSet(Request $request)
-    {
+    // In your InstallerController or wherever this method resides
 
-        $data = $request->validate([
-            'domain_name' => 'required|string|max:255',
-            'codecanyon_username' => 'required|string|max:255',
-            'codecanyon_license_key' => 'required|string|max:255',
-            'app_name' => 'required|string|max:255',
-            'db_host' => 'required|string',
-            'db_port' => 'required|numeric',
-            'db_database' => 'required|string',
-            'db_username' => 'required|string',
-            'db_password' => 'nullable|string',
+public function environmentSet(Request $request)
+{
+
+    $data = $request->validate([
+        // Application Identity
+        'application_url' => 'required|string|max:255', // * Required in form
+        'app_name' => 'required|string|max:255',        // * Required in form
+
+        // License Details
+        'domain_name' => 'required|string|max:255',      // * Required in form
+        'codecanyon_username' => 'required|string|max:255', // * Required in form
+        'codecanyon_license_key' => 'required|string|max:255', // * Required in form
+
+        // Database Connection
+        'db_host' => 'required|string',                  // * Required in form
+        'db_port' => 'required|numeric',                 // * Required in form
+        'db_user' => 'required|string',                  // * Required in form (using db_user)
+        'db_name' => 'required|string',                  // * Required in form (using db_name)
+        'db_pass' => 'required|string',                  // Matches form: optional, with helper text
+    ],
+    [
+        // 2. Custom Error Messages (Optional, but helpful for clarity)
+        'application_url.required' => 'The Application URL is essential and cannot be empty.',
+        'app_name.required' => 'The Application Name field is required.',
+        'domain_name.required' => 'The Domain Name is required for license validation.',
+        'codecanyon_username.required' => 'Your Envato/CodeCanyon Username is required.',
+        'codecanyon_license_key.required' => 'The CodeCanyon License Key (Purchase Code) is required.',
+        'db_host.required' => 'The Database Host (e.g., 127.0.0.1) is required.',
+        'db_port.required' => 'The Database Port (e.g., 3306) is required.',
+        'db_user.required' => 'The Database User is required.',
+        'db_name.required' => 'The Database Name is required.',
+    ]);
+
+    $envData = [
+        // Database
+        'DB_CONNECTION' => 'mysql',
+        'DB_HOST' => $data['db_host'],
+        'DB_PORT' => $data['db_port'],
+        'DB_DATABASE' => $data['db_name'],      // Mapped from db_name
+        'DB_USERNAME' => $data['db_user'],      // Mapped from db_user
+        'DB_PASSWORD' => $data['db_pass'] ?? '', // Mapped from db_pass
+        'APP_DB' => 'true',
+
+        // Application/License
+        'APP_NAME' => $data['app_name'],
+        'APP_URL' => $data['application_url'],
+        'CODECANYON_USERNAME' => $data['codecanyon_username'],
+        'CODECANYON_LICENSE' => $data['codecanyon_license_key'],
+    ];
+
+    try {
+        // Your existing environment logic
+        $this->ensureEnv();
+        $this->setEnv($envData);
+
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
+        Artisan::call('route:clear');
+
+        // Test DB connection
+        config([
+            'database.default' => 'mysql',
+            'database.connections.mysql.host' => $envData['DB_HOST'],
+            'database.connections.mysql.port' => $envData['DB_PORT'],
+            'database.connections.mysql.database' => $envData['DB_DATABASE'],
+            'database.connections.mysql.username' => $envData['DB_USERNAME'],
+            'database.connections.mysql.password' => $envData['DB_PASSWORD'],
         ]);
 
-        $envData = [
-            'DB_CONNECTION' => 'mysql',
-            'DB_HOST' => $data['db_host'],
-            'DB_PORT' => $data['db_port'],
-            'DB_DATABASE' => $data['db_database'],
-            'DB_USERNAME' => $data['db_username'],
-            'DB_PASSWORD' => $data['db_password'] ?? '',
-            'APP_DB' => 'true',
-            'APP_NAME' => $data['app_name'],
-            'APP_URL' => $data['application_url'],
-            'CODECANYON_USERNAME' => $data['codecanyon_username'],
-            'CODECANYON_LICENSE' => $data['codecanyon_license_key'],
-        ];
 
         try {
-            $this->ensureEnv();
-            $this->setEnv($envData);
+            DB::connection()->getPdo(); // Triggers the actual connection attempt
+            Log::info('Database connection test successful', ['host' => $envData['DB_HOST'], 'database' => $envData['DB_DATABASE']]);
+        } catch (\PDOException $e) {
+             throw new Exception("Database Connection Failed: " . $e->getMessage());
+        }
+
+
+        $request->session()->put('installer_data', $envData);
+
+        return redirect()->route('install.admin.form')->with('success', 'Environment settings saved and database connected successfully.');
+
+    } catch (Exception $e) {
+        Log::error('Environment setup failed: ' . $e->getMessage());
+        return back()->with('error', $e->getMessage())->withInput();
+    }
+}
+
+    public function adminForm()
+    {
+        return view('installer::installer.admin');
+    }
+
+    public function adminStore(Request $request)
+    {
+
+        $exitCode = Artisan::call('migrate:fresh', [
+            '--force' => true,
+            '--seed' => true,
+        ]);
+
+        // Check for non-zero exit code (failure)
+        if ($exitCode !== 0) {
+            $output = Artisan::output();
+            throw new Exception("Migration/Seeding failed. Output: " . $output);
+        }
+
+        // Optional: Ensure the final DB check passes
+        DB::connection()->getPdo();
+
+        Log::info('Migration and seeding completed successfully.');
+
+        $data = $request->validate([
+            'name' => 'required|string|max:150',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        try {
+            $user = DB::table('users')->insert([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role_id' => 1,
+                'can_login' => 1,
+                'status' => 1
+            ]);
+
+            $this->setEnv([
+                'SESSION_DRIVER' => 'database',
+                'CACHE_STORE' => 'database',
+                'APP_DB_SYNC' => 'true'
+            ]);
 
             Artisan::call('config:clear');
             Artisan::call('cache:clear');
-            Artisan::call('route:clear');
 
-            // Test DB connection
-            config([
-                'database.default' => 'mysql',
-                'database.connections.mysql.host' => $envData['DB_HOST'],
-                'database.connections.mysql.port' => $envData['DB_PORT'],
-                'database.connections.mysql.database' => $envData['DB_DATABASE'],
-                'database.connections.mysql.username' => $envData['DB_USERNAME'],
-                'database.connections.mysql.password' => $envData['DB_PASSWORD'],
-            ]);
-
-            Log::info('Database connection test successful', ['host' => $envData['DB_HOST'], 'database' => $envData['DB_DATABASE']]);
-
-            $request->session()->put('installer_data', $envData);
-
-            return redirect()->route('install.admin.form')->with('success', 'Environment settings saved successfully.');
+            return redirect()->route('install.finish')->with('success', 'Admin user created successfully.');
         } catch (Exception $e) {
-
-            Log::error('Environment setup failed: ' . $e->getMessage());
-            return back()->with('error', $e->getMessage())->withInput();
+            return back()->withErrors(['admin' => 'Failed to create admin user: ' . $e->getMessage()])->withInput();
         }
-
     }
 
     public function database(Request $request)
@@ -156,44 +241,7 @@ class SystemCheckController extends Controller
         }
     }
 
-    public function adminForm()
-    {
-        Log::info('Displaying admin creation form');
-        return view('installer::installer.admin');
-    }
 
-    public function adminStore(Request $request)
-    {
-        $data = $request->validate([
-            'name' => 'required|string|max:150',
-            'email' => 'required|email',
-            'password' => 'required|min:6|confirmed',
-        ]);
-
-        try {
-            $user = DB::table('users')->insert([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role_id' => 1,
-                'can_login' => 1,
-                'status' => 1
-            ]);
-
-            $this->setEnv([
-                'SESSION_DRIVER' => 'database',
-                'CACHE_STORE' => 'database',
-                'APP_DB_SYNC' => 'true'
-            ]);
-
-            Artisan::call('config:clear');
-            Artisan::call('cache:clear');
-
-            return redirect()->route('install.finish')->with('success', 'Admin user created successfully.');
-        } catch (Exception $e) {
-            return back()->withErrors(['admin' => 'Failed to create admin user: ' . $e->getMessage()])->withInput();
-        }
-    }
 
     public function finish()
     {

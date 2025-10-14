@@ -9,9 +9,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <style>
-        /* Custom styles to mimic the original look and feel using Bootstrap utilities */
         body {
-            /* Mimic original background gradient */
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
         }
@@ -24,7 +22,6 @@
             background-color: white; /* Ensure white background */
         }
 
-        /* --- Step Indicator Custom Styling for Visual Fidelity --- */
 
         .step-indicator {
             display: flex;
@@ -92,6 +89,7 @@
     </style>
 </head>
 <body class="d-flex justify-content-center align-items-center p-4">
+    
     <div class="container-md" style="max-width: 768px;"> <div class="mb-5 text-center">
             <div class="d-flex justify-content-center align-items-center mb-3">
                 <i class="me-3 fs-3 text-primary fa-solid fa-hands-helping"></i> <h1 class="h3 fw-bold text-dark">{{ config('app.name') }}</h1> </div>
