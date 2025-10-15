@@ -19,11 +19,6 @@ use Sparktro\Installer\Http\Controllers\SystemCheckController;
 
             Route::match(['post'], '/admin/store', [SystemCheckController::class, 'adminStore'])->name('admin.store');
 
-//            Route::match(['get', 'post'], '/migrate', [SystemCheckController::class, 'migrate'])->name('migrate');
-
-//            Route::match(['get', 'post'], '/import/database', [SystemCheckController::class, 'importDatabase'])->name('import.database');
-
-
             Route::match(['get', 'post'], '/finish', [SystemCheckController::class, 'finish'])->name('finish');
         });
 

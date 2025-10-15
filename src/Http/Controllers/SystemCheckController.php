@@ -35,13 +35,13 @@ class SystemCheckController extends Controller
 
         $allRequirementsMet = ! in_array(false, $requirements, true);
 
-        return view('installer::installer.welcome', compact('requirements', 'allRequirementsMet'));
+        return view('installer::installer.step1', compact('requirements', 'allRequirementsMet'));
     }
 
     public function dbForm()
     {
 
-        return view('installer::installer.requirements');
+        return view('installer::installer.step2');
     }
 
     // In your InstallerController or wherever this method resides
@@ -128,14 +128,13 @@ class SystemCheckController extends Controller
 
         } catch (Exception $e) {
             Log::error('Environment setup failed: '.$e->getMessage());
-
             return back()->with('error', $e->getMessage())->withInput();
         }
     }
 
     public function adminForm()
     {
-        return view('installer::installer.admin');
+        return view('installer::installer.step3');
     }
 
     public function setupDatabase(Request $request)
@@ -157,7 +156,6 @@ class SystemCheckController extends Controller
             return redirect()->route('install.admin.form')->with('success', 'Database setup completed successfully. Please create the administrator account.');
 
         } catch (Exception $e) {
-            // Clear config/cache after failure attempt
             Artisan::call('config:clear');
 
             return back()->with('error', 'Database setup failed: '.$e->getMessage());
@@ -205,60 +203,8 @@ class SystemCheckController extends Controller
         }
     }
 
-    public function database(Request $request)
-    {
-        $data = $request->session()->get('installer_data');
 
-        if (empty($data)) {
-            Log::warning('No installer data found in session, redirecting to environment');
 
-            return redirect()->route('install.environment');
-        }
-
-        return view('installer::installer.database');
-    }
-
-    public function migrate()
-    {
-        try {
-            Log::info('Running migrations and seeders');
-
-            Artisan::call('migrate', ['--force' => true]);
-            Artisan::call('db:seed', ['--force' => true]);
-
-            Log::info('Migrations and seeders completed');
-
-            return redirect()->route('install.admin.form')
-                ->with('success', 'Migrations and seeders ran successfully.');
-        } catch (Exception $e) {
-            Log::error('Migration failed: '.$e->getMessage());
-
-            return back()->with('error', 'Migration failed: '.$e->getMessage());
-        }
-    }
-
-    public function importDatabase(Request $request)
-    {
-        try {
-            $sqlPath = base_path('database/factories/application.sql');
-
-            if (! File::exists($sqlPath)) {
-                Log::warning('SQL file not found, redirecting to migrate');
-
-                return redirect()->route('install.migrate');
-            }
-
-            $this->importSqlFile($sqlPath);
-            Log::info('SQL file imported successfully');
-
-            return redirect()->route('install.admin.form')
-                ->with('success', 'Database imported successfully.');
-        } catch (Exception $e) {
-            Log::error('Database import failed: '.$e->getMessage());
-
-            return back()->with('error', 'Database import failed: '.$e->getMessage());
-        }
-    }
 
     public function finish()
     {
@@ -270,7 +216,7 @@ class SystemCheckController extends Controller
         Artisan::call('route:cache');
         Artisan::call('view:cache');
 
-        return view('installer::installer.finish', compact('appUrl'));
+        return view('installer::installer.step4', compact('appUrl'));
     }
 
     protected function ensureStorageExists()
@@ -329,39 +275,6 @@ class SystemCheckController extends Controller
         Log::info('.env updated successfully');
     }
 
-    private function importSqlFile(string $filePath)
-    {
-        if (! File::exists($filePath)) {
-            throw new Exception('SQL file not found');
-        }
-
-        $handle = fopen($filePath, 'r');
-        $sql = '';
-        $lineNumber = 0;
-
-        while (($line = fgets($handle)) !== false) {
-            $lineNumber++;
-            $trimmedLine = trim($line);
-            if ($trimmedLine === '' || str_starts_with($trimmedLine, ['--', '#', '/*'])) {
-                continue;
-            }
-
-            $sql .= $line;
-            if (substr(rtrim($line), -1) === ';') {
-                try {
-                    DB::statement(rtrim($sql, ';'));
-                } catch (Exception $e) {
-                    fclose($handle);
-                    Log::error("SQL error at line {$lineNumber}: ".$e->getMessage());
-                    throw new Exception("SQL failed at line {$lineNumber}: ".$e->getMessage());
-                }
-                $sql = '';
-            }
-        }
-
-        fclose($handle);
-        Log::info('SQL imported successfully');
-    }
 
     public function ensureEnv()
     {
