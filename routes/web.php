@@ -13,17 +13,15 @@ use Sparktro\Installer\Http\Controllers\SystemCheckController;
             Route::match(['get'], '/requirements', [SystemCheckController::class, 'dbForm'])->name('requirements');
 
             Route::match(['post'], '/environment', [SystemCheckController::class, 'environmentSet'])->name('environment.set');
+            Route::post('database-setup', [SystemCheckController::class, 'setupDatabase'])->name('database.setup');
 
             Route::match(['get'], '/admin', [SystemCheckController::class, 'adminForm'])->name('admin.form');
 
-            Route::post('database-setup', [SystemCheckController::class, 'setupDatabase'])->name('database.setup');
-
-
             Route::match(['post'], '/admin/store', [SystemCheckController::class, 'adminStore'])->name('admin.store');
 
-            Route::match(['get', 'post'], '/migrate', [SystemCheckController::class, 'migrate'])->name('migrate');
+//            Route::match(['get', 'post'], '/migrate', [SystemCheckController::class, 'migrate'])->name('migrate');
 
-            Route::match(['get', 'post'], '/import/database', [SystemCheckController::class, 'importDatabase'])->name('import.database');
+//            Route::match(['get', 'post'], '/import/database', [SystemCheckController::class, 'importDatabase'])->name('import.database');
 
 
             Route::match(['get', 'post'], '/finish', [SystemCheckController::class, 'finish'])->name('finish');
