@@ -137,10 +137,12 @@ class SystemCheckController extends Controller
         return view('installer::installer.step3');
     }
 
+    // In Sparktro\Installer\Http\Controllers\SystemCheckController
+
     public function setupDatabase(Request $request)
     {
         try {
-            // Run Migration and Seeding (as discussed in the previous response)
+
             $exitCode = Artisan::call('migrate:fresh', [
                 '--force' => true,
                 '--seed' => true,
@@ -151,54 +153,89 @@ class SystemCheckController extends Controller
                 throw new Exception('Migration Seeding failed. Output: '.$output);
             }
 
+            $this->setEnv(['APP_DB_SYNC' => 'true']);
+            Artisan::call('config:clear');
+
             $request->session()->put('db_migration_complete', true);
 
             return redirect()->route('install.admin.form')->with('success', 'Database setup completed successfully. Please create the administrator account.');
 
         } catch (Exception $e) {
-            Artisan::call('config:clear');
-
-            return back()->with('error', 'Database setup failed: '.$e->getMessage());
+            // ... error handling
         }
     }
 
+    // In Sparktro\Installer\Http\Controllers\SystemCheckController
+
     public function adminStore(Request $request)
     {
-
+        // The middleware should prevent this, but the session check is a good backup
         if (! $request->session()->get('db_migration_complete')) {
             Log::warning('Attempt to create admin user before DB migration');
             return redirect()->back()->with('error', 'Please complete the database setup before creating an admin user.');
         }
 
-        Log::info('Migration and seeding completed successfully.');
-
         $data = $request->validate([
             'name' => 'required|string|max:150',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email', // Added unique check
             'password' => 'required|min:6|confirmed',
         ]);
 
         try {
+            $dbDetails = [
+                'DB_HOST' => env('DB_HOST'),
+                'DB_PORT' => env('DB_PORT'),
+                'DB_DATABASE' => env('DB_DATABASE'),
+                'DB_USERNAME' => env('DB_USERNAME'),
+                'DB_PASSWORD' => env('DB_PASSWORD'),
+            ];
+
+            config([
+                'database.default' => 'mysql',
+                'database.connections.mysql.host' => $dbDetails['DB_HOST'],
+                'database.connections.mysql.port' => $dbDetails['DB_PORT'],
+                'database.connections.mysql.database' => $dbDetails['DB_DATABASE'],
+                'database.connections.mysql.username' => $dbDetails['DB_USERNAME'],
+                'database.connections.mysql.password' => $dbDetails['DB_PASSWORD'],
+            ]);
+
+            DB::connection()->getPdo();
+
+            // --- DB INSERT FIX: Added Timestamps ---
+            $currentTime = now();
             $user = DB::table('users')->insert([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role_id' => 1,
+                'role_id' => 1, // Assuming role_id 1 is Admin
                 'can_login' => 1,
                 'status' => 1,
+                'created_at' => $currentTime, // Required for many Laravel apps
+                'updated_at' => $currentTime, // Required for many Laravel apps
             ]);
 
+            // Clear session flag
+            $request->session()->forget('db_migration_complete');
+
+            // Final ENV updates (move session/cache drivers to database)
             $this->setEnv([
                 'SESSION_DRIVER' => 'database',
                 'CACHE_STORE' => 'database',
-                'APP_DB_SYNC' => 'true',
+                'APP_DB_SYNC' => 'true', // Re-confirm this is true
             ]);
 
             Artisan::call('config:clear');
             Artisan::call('cache:clear');
 
+            Log::info('Migration and seeding completed and Admin user created successfully.');
             return redirect()->route('install.finish')->with('success', 'Admin user created successfully.');
+
+        } catch (\PDOException $e) {
+            // Catch database specific errors
+            return back()->withErrors(['db' => 'Database operation failed during admin creation: '.$e->getMessage()])->withInput();
+
         } catch (Exception $e) {
+            // Catch general errors
             return back()->withErrors(['admin' => 'Failed to create admin user: '.$e->getMessage()])->withInput();
         }
     }
@@ -211,11 +248,9 @@ class SystemCheckController extends Controller
         $this->setEnv(['APP_INSTALLED' => 'true']);
         $appUrl = url('/');
         Log::info("Installation finished. App URL: {$appUrl}");
-
         Artisan::call('config:cache');
         Artisan::call('route:cache');
         Artisan::call('view:cache');
-
         return view('installer::installer.step4', compact('appUrl'));
     }
 
