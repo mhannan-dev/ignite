@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Sparktro\Installer\Http\Controllers\SystemCheckController;
 
+$isInstalled = filter_var(env('APP_INSTALLED', false), FILTER_VALIDATE_BOOLEAN);
+
+if (!$isInstalled) {
     Route::middleware([\Sparktro\Installer\Middleware\CheckInstallation::class, 'web'])
         ->prefix('install')
         ->as('install.')
@@ -28,4 +31,4 @@ use Sparktro\Installer\Http\Controllers\SystemCheckController;
 
             Route::match(['get', 'post'], '/finish', [SystemCheckController::class, 'finish'])->name('finish');
         });
-
+}

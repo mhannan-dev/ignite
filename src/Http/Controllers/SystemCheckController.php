@@ -149,7 +149,7 @@ class SystemCheckController extends Controller
 
             if ($exitCode !== 0) {
                 $output = Artisan::output();
-                throw new Exception('Migration/Seeding failed. Output: '.$output);
+                throw new Exception('Migration Seeding failed. Output: '.$output);
             }
 
             $request->session()->put('db_migration_complete', true);
