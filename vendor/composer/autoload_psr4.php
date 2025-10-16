@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Sparktro\\Installer\\' => array($baseDir . '/src'),
+    'Sparktro\\Ignite\\' => array($baseDir . '/src'),
 );

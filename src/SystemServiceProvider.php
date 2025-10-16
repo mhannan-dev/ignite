@@ -1,6 +1,6 @@
 <?php
 
-namespace Sparktro\Installer;
+namespace Sparktro\Ignite;
 
 use Illuminate\Support\ServiceProvider;
 

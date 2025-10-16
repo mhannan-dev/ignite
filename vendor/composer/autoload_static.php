@@ -9,12 +9,12 @@ class ComposerStaticInit7f64f004132f2228989e92df32a20465
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
-            'Sparktro\\Installer\\' => 19,
+            'Sparktro\\Ignite\\' => 16,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Sparktro\\Installer\\' => 
+        'Sparktro\\Ignite\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
