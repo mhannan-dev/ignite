@@ -140,13 +140,7 @@ class SystemCheckController extends Controller
         ini_set('memory_limit', '-1');        // unlimited memory
         ini_set('max_execution_time', 600);   // 10 minutes
 
-        try {
-    DB::connection()->getPdo();
-    Log::info('DB connection verified.');
-    } catch (\Exception $e) {
-        Log::error('DB connection failed: '.$e->getMessage());
-    }
-
+        DB::connection()->getPdo();
         try {
 
             $exitCode = Artisan::call('migrate:fresh', [
@@ -167,7 +161,8 @@ class SystemCheckController extends Controller
             return redirect()->route('install.admin.form')->with('success', 'Database setup completed successfully. Please create the administrator account.');
 
         } catch (Exception $e) {
-            // ... error handling
+             Log::error('DB migration setup failed: '.$e->getMessage());
+            return back()->with('error', $e->getMessage())->withInput();
         }
     }
 
@@ -208,7 +203,7 @@ class SystemCheckController extends Controller
 
             // DB::connection()->getPdo();
 
-            // --- DB INSERT FIX: Added Timestamps ---
+
             $currentTime = now();
             $user = DB::table('users')->insert([
                 'name' => $request->name,
@@ -217,8 +212,8 @@ class SystemCheckController extends Controller
                 'role_id' => 1, // Assuming role_id 1 is Admin
                 'can_login' => 1,
                 'status' => 1,
-                'created_at' => $currentTime, // Required for many Laravel apps
-                'updated_at' => $currentTime, // Required for many Laravel apps
+                'created_at' => $currentTime, 
+                'updated_at' => $currentTime,
             ]);
 
             // Clear session flag
@@ -308,7 +303,7 @@ class SystemCheckController extends Controller
     {
         ini_set('memory_limit', '-1');        // unlimited memory
         ini_set('max_execution_time', 600);   // 10 minutes
-        
+
         $this->ensureEnv();
         $path = base_path('.env');
         $content = File::get($path);
