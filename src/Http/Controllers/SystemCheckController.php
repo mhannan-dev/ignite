@@ -50,8 +50,8 @@ class SystemCheckController extends Controller
 
     public function environmentSet(Request $request)
     {
-        ini_set('memory_limit', '1G');
-        ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '-1');        // unlimited memory
+        ini_set('max_execution_time', 600);   // 10 minutes
         $data = $request->validate([
             // Application Identity
             'application_url' => 'required|string|max:255', // * Required in form
@@ -137,8 +137,8 @@ class SystemCheckController extends Controller
 
     public function setupDatabase(Request $request)
     {
-        ini_set('memory_limit', '1G');
-        ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '-1');        // unlimited memory
+        ini_set('max_execution_time', 600);   // 10 minutes
 
         try {
     DB::connection()->getPdo();
@@ -174,6 +174,8 @@ class SystemCheckController extends Controller
 
     public function adminStore(Request $request)
     {
+        ini_set('memory_limit', '-1');        // unlimited memory
+        ini_set('max_execution_time', 600);   // 10 minutes
         // The middleware should prevent this, but the session check is a good backup
         if (! $request->session()->get('db_migration_complete')) {
             Log::warning('Attempt to create admin user before DB migration');
@@ -268,7 +270,8 @@ class SystemCheckController extends Controller
 
     protected function ensureStorageExists()
     {
-        ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '-1');        // unlimited memory
+        ini_set('max_execution_time', 600);   // 10 minutes
         $paths = [
             storage_path('app/public/uploads'),
             storage_path('app/private'),
@@ -303,7 +306,9 @@ class SystemCheckController extends Controller
 
     private function setEnv(array $values)
     {
-        ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '-1');        // unlimited memory
+        ini_set('max_execution_time', 600);   // 10 minutes
+        
         $this->ensureEnv();
         $path = base_path('.env');
         $content = File::get($path);
