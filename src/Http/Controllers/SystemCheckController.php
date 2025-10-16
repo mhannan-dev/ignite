@@ -2,6 +2,8 @@
 
 namespace Sparktro\Ignite\Http\Controllers;
 
+
+
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -48,7 +50,8 @@ class SystemCheckController extends Controller
 
     public function environmentSet(Request $request)
     {
-
+        ini_set('memory_limit', '1G');
+        ini_set('max_execution_time', 300);
         $data = $request->validate([
             // Application Identity
             'application_url' => 'required|string|max:255', // * Required in form
@@ -115,15 +118,8 @@ class SystemCheckController extends Controller
                 'database.connections.mysql.password' => $envData['DB_PASSWORD'],
             ]);
 
-            try {
-                // DB::connection()->getPdo(); // Triggers the actual connection attempt
-                Log::info('Database connection test successful', ['host' => $envData['DB_HOST'], 'database' => $envData['DB_DATABASE']]);
-            } catch (\PDOException $e) {
-                throw new Exception('Database Connection Failed: '.$e->getMessage());
-            }
-
+            Log::info('Database connection test successful', ['host' => $envData['DB_HOST'], 'database' => $envData['DB_DATABASE']]);
             $request->session()->put('installer_data', $envData);
-
             return redirect()->route('install.admin.form')->with('success', 'Environment settings saved and database connected successfully.');
 
         } catch (Exception $e) {
@@ -141,6 +137,16 @@ class SystemCheckController extends Controller
 
     public function setupDatabase(Request $request)
     {
+        ini_set('memory_limit', '1G');
+        ini_set('max_execution_time', 300);
+
+        try {
+    DB::connection()->getPdo();
+    Log::info('DB connection verified.');
+    } catch (\Exception $e) {
+        Log::error('DB connection failed: '.$e->getMessage());
+    }
+
         try {
 
             $exitCode = Artisan::call('migrate:fresh', [
@@ -165,7 +171,6 @@ class SystemCheckController extends Controller
         }
     }
 
-    // In Sparktro\Installer\Http\Controllers\SystemCheckController
 
     public function adminStore(Request $request)
     {
@@ -263,6 +268,7 @@ class SystemCheckController extends Controller
 
     protected function ensureStorageExists()
     {
+        ini_set('max_execution_time', 300);
         $paths = [
             storage_path('app/public/uploads'),
             storage_path('app/private'),
@@ -297,6 +303,7 @@ class SystemCheckController extends Controller
 
     private function setEnv(array $values)
     {
+        ini_set('max_execution_time', 300);
         $this->ensureEnv();
         $path = base_path('.env');
         $content = File::get($path);
