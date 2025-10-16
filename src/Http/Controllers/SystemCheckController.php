@@ -29,6 +29,7 @@ class SystemCheckController extends Controller
             'XML' => extension_loaded('xml'),
             'Tokenizer' => extension_loaded('tokenizer'),
             'Writable storage/' => is_writable(storage_path()),
+            'Writable storage/app/' => is_writable(storage_path('app')), // updated
             'Writable storage/framework/' => is_writable(storage_path('framework')),
             'Writable storage/logs/' => is_writable(storage_path('logs')),
             'Writable bootstrap/cache/' => is_writable(base_path('bootstrap/cache')),
@@ -52,23 +53,24 @@ class SystemCheckController extends Controller
     {
         ini_set('memory_limit', '-1');        // unlimited memory
         ini_set('max_execution_time', 600);   // 10 minutes
-        $data = $request->validate([
-            // Application Identity
-            'application_url' => 'required|string|max:255', // * Required in form
-            'app_name' => 'required|string|max:255',        // * Required in form
+        $data = $request->validate(
+            [
+                // Application Identity
+                'application_url' => 'required|string|max:255', // * Required in form
+                'app_name' => 'required|string|max:255',        // * Required in form
 
-            // License Details
-            'domain_name' => 'required|string|max:255',      // * Required in form
-            'codecanyon_username' => 'required|string|max:255', // * Required in form
-            'codecanyon_license_key' => 'required|string|max:255', // * Required in form
+                // License Details
+                'domain_name' => 'required|string|max:255',      // * Required in form
+                'codecanyon_username' => 'required|string|max:255', // * Required in form
+                'codecanyon_license_key' => 'required|string|max:255', // * Required in form
 
-            // Database Connection
-            'db_host' => 'required|string',                  // * Required in form
-            'db_port' => 'required|numeric',                 // * Required in form
-            'db_user' => 'required|string',                  // * Required in form (using db_user)
-            'db_name' => 'required|string',                  // * Required in form (using db_name)
-            'db_pass' => 'required|string',                  // Matches form: optional, with helper text
-        ],
+                // Database Connection
+                'db_host' => 'required|string',                  // * Required in form
+                'db_port' => 'required|numeric',                 // * Required in form
+                'db_user' => 'required|string',                  // * Required in form (using db_user)
+                'db_name' => 'required|string',                  // * Required in form (using db_name)
+                'db_pass' => 'required|string',                  // Matches form: optional, with helper text
+            ],
             [
                 // 2. Custom Error Messages (Optional, but helpful for clarity)
                 'application_url.required' => 'The Application URL is essential and cannot be empty.',
@@ -80,7 +82,8 @@ class SystemCheckController extends Controller
                 'db_port.required' => 'The Database Port (e.g., 3306) is required.',
                 'db_user.required' => 'The Database User is required.',
                 'db_name.required' => 'The Database Name is required.',
-            ]);
+            ]
+        );
 
         $envData = [
             // Database
@@ -121,9 +124,8 @@ class SystemCheckController extends Controller
             Log::info('Database connection test successful', ['host' => $envData['DB_HOST'], 'database' => $envData['DB_DATABASE']]);
             $request->session()->put('installer_data', $envData);
             return redirect()->route('install.admin.form')->with('success', 'Environment settings saved and database connected successfully.');
-
         } catch (Exception $e) {
-            Log::error('Environment setup failed: '.$e->getMessage());
+            Log::error('Environment setup failed: ' . $e->getMessage());
             return back()->with('error', $e->getMessage())->withInput();
         }
     }
@@ -150,7 +152,7 @@ class SystemCheckController extends Controller
 
             if ($exitCode !== 0) {
                 $output = Artisan::output();
-                throw new Exception('Migration Seeding failed. Output: '.$output);
+                throw new Exception('Migration Seeding failed. Output: ' . $output);
             }
 
             $this->setEnv(['APP_DB_SYNC' => 'true']);
@@ -159,9 +161,8 @@ class SystemCheckController extends Controller
             $request->session()->put('db_migration_complete', true);
 
             return redirect()->route('install.admin.form')->with('success', 'Database setup completed successfully. Please create the administrator account.');
-
         } catch (Exception $e) {
-             Log::error('DB migration setup failed: '.$e->getMessage());
+            Log::error('DB migration setup failed: ' . $e->getMessage());
             return back()->with('error', $e->getMessage())->withInput();
         }
     }
@@ -212,7 +213,7 @@ class SystemCheckController extends Controller
                 'role_id' => 1, // Assuming role_id 1 is Admin
                 'can_login' => 1,
                 'status' => 1,
-                'created_at' => $currentTime, 
+                'created_at' => $currentTime,
                 'updated_at' => $currentTime,
             ]);
 
@@ -231,13 +232,11 @@ class SystemCheckController extends Controller
 
             Log::info('Migration and seeding completed and Admin user created successfully.');
             return redirect()->route('install.finish')->with('success', 'Admin user created successfully.');
-
         } catch (\PDOException $e) {
-            return back()->withErrors(['db' => 'Database operation failed during admin creation: '.$e->getMessage()])->withInput();
-
+            return back()->withErrors(['db' => 'Database operation failed during admin creation: ' . $e->getMessage()])->withInput();
         } catch (Exception $e) {
             // Catch general errors
-            return back()->withErrors(['admin' => 'Failed to create admin user: '.$e->getMessage()])->withInput();
+            return back()->withErrors(['admin' => 'Failed to create admin user: ' . $e->getMessage()])->withInput();
         }
     }
 
@@ -285,7 +284,7 @@ class SystemCheckController extends Controller
             if (! File::exists($path)) {
                 File::makeDirectory($path, 0775, true);
             }
-            $gitignore = $path.'/.gitignore';
+            $gitignore = $path . '/.gitignore';
             if (! File::exists($gitignore)) {
                 File::put($gitignore, "*\n!.gitignore\n");
             }
@@ -316,7 +315,7 @@ class SystemCheckController extends Controller
             $replacement = "{$key}={$formattedValue}";
             $content = preg_match($pattern, $content)
                 ? preg_replace($pattern, $replacement, $content, 1)
-                : $content.PHP_EOL.$replacement;
+                : $content . PHP_EOL . $replacement;
             Log::debug("Updated .env: {$key}={$formattedValue}");
         }
 
