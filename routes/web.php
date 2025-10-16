@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Sparktro\Installer\Http\Controllers\SystemCheckController;
+use Sparktro\Ignite\Http\Controllers\SystemCheckController;
 
     Route::middleware([\Sparktro\Ignite\Middleware\CheckInstallation::class, 'web'])
         ->prefix('install')

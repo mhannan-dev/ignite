@@ -1,6 +1,6 @@
 <?php
 
-namespace Sparktro\Installer\Http\Controllers;
+namespace Sparktro\Ignite\Http\Controllers;
 
 use Exception;
 use Illuminate\Http\Request;
