@@ -116,7 +116,7 @@ class SystemCheckController extends Controller
             ]);
 
             try {
-                DB::connection()->getPdo(); // Triggers the actual connection attempt
+                // DB::connection()->getPdo(); // Triggers the actual connection attempt
                 Log::info('Database connection test successful', ['host' => $envData['DB_HOST'], 'database' => $envData['DB_DATABASE']]);
             } catch (\PDOException $e) {
                 throw new Exception('Database Connection Failed: '.$e->getMessage());
@@ -199,7 +199,7 @@ class SystemCheckController extends Controller
                 'database.connections.mysql.password' => $dbDetails['DB_PASSWORD'],
             ]);
 
-            DB::connection()->getPdo();
+            // DB::connection()->getPdo();
 
             // --- DB INSERT FIX: Added Timestamps ---
             $currentTime = now();
@@ -231,7 +231,6 @@ class SystemCheckController extends Controller
             return redirect()->route('install.finish')->with('success', 'Admin user created successfully.');
 
         } catch (\PDOException $e) {
-            // Catch database specific errors
             return back()->withErrors(['db' => 'Database operation failed during admin creation: '.$e->getMessage()])->withInput();
 
         } catch (Exception $e) {
@@ -242,16 +241,24 @@ class SystemCheckController extends Controller
 
 
 
-
     public function finish()
     {
         $this->setEnv(['APP_INSTALLED' => 'true']);
+
+        // Clear cached config & route
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        Artisan::call('view:clear');
+
+        // Runtime config update
+        config(['app.installed' => true]);
+        putenv('APP_INSTALLED=true');
+
         $appUrl = url('/');
         Log::info("Installation finished. App URL: {$appUrl}");
-        Artisan::call('config:cache');
-        Artisan::call('route:cache');
-        Artisan::call('view:cache');
-        return view('installer::installer.step4', compact('appUrl'));
+
+        // return redirect('/')->with('success', 'Installation completed');
+        return view('installer::installer.finish', compact('appUrl'));
     }
 
     protected function ensureStorageExists()
