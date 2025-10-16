@@ -257,8 +257,8 @@ class SystemCheckController extends Controller
         $appUrl = url('/');
         Log::info("Installation finished. App URL: {$appUrl}");
 
-        // return redirect('/')->with('success', 'Installation completed');
-        return view('installer::installer.finish', compact('appUrl'));
+        return redirect('/')->with('success', 'Installation completed');
+        // return view('installer::installer.finish', compact('appUrl'));
     }
 
     protected function ensureStorageExists()
