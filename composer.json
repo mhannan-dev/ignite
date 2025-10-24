@@ -9,6 +9,7 @@
       "email": "mdhannan.info@gmail.com"
     }
   ],
+  
   "autoload": {
     "psr-4": {
       "Sparktro\\Ignite\\": "src/"
