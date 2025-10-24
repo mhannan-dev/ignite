@@ -9,7 +9,6 @@
     <form action="{{ route('install.environment.set') }}" method="post" class="needs-validation" novalidate>
         @csrf
 
-        <!-- Application Identity -->
         <h5 class="text-primary mb-3">Application Identity</h5>
         <div class="row g-3 mb-3">
             <div class="col-md-6">
@@ -36,7 +35,6 @@
 
         <hr class="my-4">
 
-        <!-- License Details -->
         <h5 class="text-primary mb-3">License Details</h5>
         <div class="row g-3 mb-3">
             <div class="col-md-6">
@@ -80,7 +78,6 @@
 
         <hr class="my-4">
 
-        <!-- Database Connection -->
         <h5 class="text-primary mb-3">Database Connection</h5>
 
         <div class="row g-3 mb-3">
@@ -134,16 +131,32 @@
                 </div>
             </div>
 
-            <!-- ✅ Password Field with Toggle -->
             <div class="col-md-6">
                 <label for="db_pass" class="form-label small fw-medium text-secondary">Database Password<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <i class="fa-solid fa-lock"></i>
                     </span>
-                    <input type="password" id="db_pass" name="db_pass" class="form-control" value="11111111">
-                    <button type="button" class="btn btn-outline-secondary" id="togglePassword" tabindex="-1">
-                        <i class="fa-solid fa-eye-slash" id="toggleIcon"></i>
+                    {{-- Alpine.js binding: x-bind:type checks the showPassword state from layout --}}
+                    <input 
+                        :type="showPassword ? 'text' : 'password'" 
+                        id="db_pass" 
+                        name="db_pass" 
+                        class="form-control" 
+                        placeholder="PassC765#"
+                    >
+                    {{-- Alpine.js click handler and icon binding --}}
+                    <button 
+                        type="button" 
+                        class="btn btn-outline-secondary" 
+                        id="togglePassword" 
+                        x-on:click="showPassword = ! showPassword" 
+                        tabindex="-1"
+                    >
+                        <i 
+                            :class="showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'" 
+                            id="toggleIcon"
+                        ></i>
                     </button>
                 </div>
                 <div class="form-text">Leave blank if no password is set.</div>
@@ -157,7 +170,4 @@
             </button>
         </div>
     </form>
-
-   
-
 @endsection

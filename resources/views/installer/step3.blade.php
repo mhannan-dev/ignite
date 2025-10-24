@@ -37,7 +37,6 @@
         <form action="{{ route('install.admin.store') }}" method="post" class="needs-validation" novalidate>
             @csrf
 
-            <!-- Full Name -->
             <div class="mb-3">
                 <label for="name" class="form-label small fw-medium text-secondary">Full Name</label>
                 <input type="text" id="name" name="name" placeholder="Full Name"
@@ -46,7 +45,6 @@
                 <div class="invalid-feedback">Full Name is required.</div>
             </div>
 
-            <!-- Email -->
             <div class="mb-3">
                 <label for="email" class="form-label small fw-medium text-secondary">Email Address</label>
                 <input type="email" id="email" name="email" placeholder="Email"
@@ -55,16 +53,16 @@
                 <div class="invalid-feedback">A valid Email Address is required.</div>
             </div>
 
-            <!-- Passwords -->
             <div class="row g-3 mb-3">
                 <div class="col-md-6 position-relative">
                     <label for="password" class="form-label small fw-medium text-secondary">Password</label>
                     <div class="input-group">
-                        <input type="password" id="password" name="password" placeholder="Password"
+                        {{-- Alpine.js binding for Password field --}}
+                        <input :type="showPassword ? 'text' : 'password'" id="password" name="password" placeholder="Password"
                             class="form-control" required>
-                        <span class="input-group-text bg-transparent border-start-0" style="cursor: pointer;"
-                              onclick="togglePassword('password', this)">
-                            <i class="fa-solid fa-eye-slash"></i>
+                        {{-- Toggle button: only attach the click handler to ONE button (Confirm Password's button) --}}
+                        <span class="input-group-text bg-transparent border-start-0 text-secondary">
+                            <i class="fa-solid fa-lock"></i>
                         </span>
                     </div>
                     <div class="invalid-feedback">Password is required.</div>
@@ -73,25 +71,25 @@
                 <div class="col-md-6 position-relative">
                     <label for="password_confirmation" class="form-label small fw-medium text-secondary">Confirm Password</label>
                     <div class="input-group">
-                        <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password"
+                        {{-- Alpine.js binding for Confirm Password field --}}
+                        <input :type="showPassword ? 'text' : 'password'" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password"
                             class="form-control" required>
-                        <span class="input-group-text bg-transparent border-start-0" style="cursor: pointer;"
-                              onclick="togglePassword('password_confirmation', this)">
-                            <i class="fa-solid fa-eye-slash"></i>
-                        </span>
+                        {{-- Alpine.js Toggle button: x-on:click and icon binding --}}
+                        <button type="button" class="btn btn-outline-secondary" x-on:click="showPassword = ! showPassword" tabindex="-1" title="Toggle password visibility">
+                            <i :class="showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
+                        </button>
                     </div>
                     <div class="invalid-feedback">Confirmation password is required.</div>
                 </div>
             </div>
 
-            <!-- Security Recommendations -->
             <div class="alert alert-info py-3" role="alert">
                 <h4 class="d-flex align-items-center mb-2 h6 text-info">
                     <i class="fa-solid fa-shield-halved me-2" style="font-size: 1.2em;"></i> Security Recommendations
                 </h4>
                 <ul class="list-unstyled mb-0 ms-2 text-sm">
                     <li class="d-flex align-items-center mb-1">
-                        <i class="fa-solid fa-check me-2" style="font-size: 1em;"></i> Use a strong, unique password
+                        <i class="fa-solid fa-check me-2" style="font-size: 1em;"></i> Use a **strong, unique password**
                     </li>
                     <li class="d-flex align-items-center mb-1">
                         <i class="fa-solid fa-check me-2" style="font-size: 1em;"></i> Include uppercase, lowercase, numbers, and symbols
@@ -113,6 +111,4 @@
             </div>
         </form>
     @endif
-
-   
 @endsection

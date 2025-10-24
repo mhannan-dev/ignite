@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }} - Installation Wizard</title>
-    
-    <!-- Bootstrap CSS -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
-    <!-- Alpine.js -->
+
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    
-    <!-- Font Awesome Free -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <style>
@@ -92,7 +89,7 @@
         }
     </style>
 </head>
-<body class="d-flex justify-content-center align-items-center p-4">
+<body class="d-flex justify-content-center align-items-center p-4" x-data="{ showPassword: false }">
     <div class="container-md" style="max-width: 768px;">
         <div class="mb-5 text-center">
             <div class="d-flex justify-content-center align-items-center mb-3">
@@ -101,9 +98,7 @@
             </div>
             <p class="text-secondary">Installation Wizard</p>
 
-            <!-- Step Indicator -->
             <div class="step-indicator">
-                <!-- Step 1 -->
                 <div class="step @if(Request::is('install/requirements')) active @elseif(Request::is('install/database') || Request::is('install/admin') || Request::is('install/complete')) completed @endif">
                     <div class="step-circle">
                         @if(Request::is('install/requirements'))
@@ -115,7 +110,6 @@
                     <span class="step-label">Requirements</span>
                 </div>
 
-                <!-- Step 2 -->
                 <div class="step @if(Request::is('install/database')) active @elseif(Request::is('install/admin') || Request::is('install/complete')) completed @endif">
                     <div class="step-circle">
                         @if(Request::is('install/database'))
@@ -129,7 +123,6 @@
                     <span class="step-label">Database</span>
                 </div>
 
-                <!-- Step 3 -->
                 <div class="step @if(Request::is('install/admin')) active @elseif(Request::is('install/complete')) completed @endif">
                     <div class="step-circle">
                         @if(Request::is('install/admin'))
@@ -143,7 +136,6 @@
                     <span class="step-label">Admin Setup</span>
                 </div>
 
-                <!-- Step 4 -->
                 <div class="step @if(Request::is('install/complete')) active @endif">
                     <div class="step-circle">
                         @if(Request::is('install/complete'))
@@ -157,7 +149,6 @@
             </div>
         </div>
 
-        <!-- Card Content -->
         <div class="p-4 p-md-5 installer-card">
             @yield('content')
         </div>
@@ -167,7 +158,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
@@ -204,17 +194,6 @@
     </script>
 
     <script>
-        // ✅ Password toggle
-        document.getElementById('togglePassword')?.addEventListener('click', function () {
-            const passwordInput = document.getElementById('db_pass');
-            const icon = document.getElementById('toggleIcon');
-            const isVisible = passwordInput.type === 'text';
-
-            passwordInput.type = isVisible ? 'password' : 'text';
-            icon.className = isVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-        });
-
-        // ✅ Bootstrap validation
         (function () {
             'use strict';
             const form = document.querySelector('.needs-validation');
@@ -228,46 +207,6 @@
                 }, false);
             }
         })();
-    </script>
-
-     <!-- ✅ Password Toggle Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const toggleBtn = document.getElementById('togglePassword');
-            const passwordInput = document.getElementById('db_pass');
-            const toggleIcon = document.getElementById('toggleIcon');
-
-            toggleBtn.addEventListener('click', function () {
-                const type = passwordInput.type === 'password' ? 'text' : 'password';
-                passwordInput.type = type;
-                toggleIcon.className = type === 'password' ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-            });
-        });
-    </script>
-
-     <script>
-        // Password visibility toggle
-        function togglePassword(fieldId, iconElement) {
-            const input = document.getElementById(fieldId);
-            const icon = iconElement.querySelector('i');
-            input.type = input.type === 'password' ? 'text' : 'password';
-            icon.className = input.type === 'password' ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-        }
-
-        // Bootstrap validation
-        (function () {
-            'use strict'
-            const form = document.querySelector('.needs-validation');
-            if (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            }
-        })()
     </script>
 </body>
 </html>
