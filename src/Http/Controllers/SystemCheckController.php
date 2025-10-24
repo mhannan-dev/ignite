@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 class SystemCheckController extends Controller
 {
-    public function welcome()
+    public function step1()
     {
         $this->ensureStorageExists();
         $requirements = [
@@ -41,7 +41,7 @@ class SystemCheckController extends Controller
         return view('installer::installer.step1', compact('requirements', 'allRequirementsMet'));
     }
 
-    public function dbForm()
+    public function step2()
     {
 
         return view('installer::installer.step2');
@@ -130,12 +130,11 @@ class SystemCheckController extends Controller
         }
     }
 
-    public function adminForm()
+    public function step3()
     {
         return view('installer::installer.step3');
     }
 
-    // In Sparktro\Installer\Http\Controllers\SystemCheckController
 
     public function setupDatabase(Request $request)
     {
