@@ -6,8 +6,6 @@
     <title>{{ config('app.name') }} - Installation Wizard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
-    <!-- ✅ Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
     <style>
@@ -85,143 +83,118 @@
             color: #0d6efd;
             font-weight: 500;
         }
+
+        .input-group .btn i {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="d-flex justify-content-center align-items-center p-4">
-    <div class="container-md" style="max-width: 768px;">
-        <div class="mb-5 text-center">
-            <div class="d-flex justify-content-center align-items-center mb-3">
-                <span class="material-icons-outlined me-2 fs-3 text-primary">handshake</span>
-                <h1 class="h3 fw-bold text-dark mb-0">{{ config('app.name') }}</h1>
-            </div>
-            <p class="text-secondary">Installation Wizard</p>
 
-            <!-- Step Indicator -->
-            <div class="step-indicator">
-                <!-- Step 1 -->
-                <div class="step @if(Request::is('install/requirements')) active @elseif(Request::is('install/database') || Request::is('install/admin') || Request::is('install/complete')) completed @endif">
-                    <div class="step-circle">
-                        @if(Request::is('install/requirements'))
-                            1
-                        @else
-                            <span class="material-icons-outlined">check</span>
-                        @endif
-                    </div>
-                    <span class="step-label">Requirements</span>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="step @if(Request::is('install/database')) active @elseif(Request::is('install/admin') || Request::is('install/complete')) completed @endif">
-                    <div class="step-circle">
-                        @if(Request::is('install/database'))
-                            2
-                        @elseif(Request::is('install/admin') || Request::is('install/complete'))
-                            <span class="material-icons-outlined">check</span>
-                        @else
-                            2
-                        @endif
-                    </div>
-                    <span class="step-label">Database</span>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="step @if(Request::is('install/admin')) active @elseif(Request::is('install/complete')) completed @endif">
-                    <div class="step-circle">
-                        @if(Request::is('install/admin'))
-                            3
-                        @elseif(Request::is('install/complete'))
-                            <span class="material-icons-outlined">check</span>
-                        @else
-                            3
-                        @endif
-                    </div>
-                    <span class="step-label">Admin Setup</span>
-                </div>
-
-                <!-- Step 4 -->
-                <div class="step @if(Request::is('install/complete')) active @endif">
-                    <div class="step-circle">
-                        @if(Request::is('install/complete'))
-                            4
-                        @else
-                            4
-                        @endif
-                    </div>
-                    <span class="step-label">Complete</span>
-                </div>
-            </div>
+<div class="container-md" style="max-width: 768px;">
+    <div class="mb-5 text-center">
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <span class="material-icons-outlined me-2 fs-3 text-primary">handshake</span>
+            <h1 class="h3 fw-bold text-dark mb-0">{{ config('app.name') }}</h1>
         </div>
+        <p class="text-secondary">Installation Wizard</p>
 
-        <!-- Card Content -->
-        <div class="p-4 p-md-5 installer-card">
-            @yield('content')
-        </div>
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <!-- Step 1 -->
+            <div class="step @if(Request::is('install/requirements')) active @elseif(Request::is('install/database') || Request::is('install/admin') || Request::is('install/complete')) completed @endif">
+                <div class="step-circle">
+                    @if(Request::is('install/requirements')) 1 @else <i class="material-icons-outlined">check</i> @endif
+                </div>
+                <span class="step-label">Requirements</span>
+            </div>
 
-        <div class="mt-4 text-center text-secondary small">
-            {{ config('app.name') }} Installer &copy; {{ date('Y') }}
+            <!-- Step 2 -->
+            <div class="step @if(Request::is('install/database')) active @elseif(Request::is('install/admin') || Request::is('install/complete')) completed @endif">
+                <div class="step-circle">
+                    @if(Request::is('install/database')) 2
+                    @elseif(Request::is('install/admin') || Request::is('install/complete')) <i class="material-icons-outlined">check</i>
+                    @else 2 @endif
+                </div>
+                <span class="step-label">Database</span>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step @if(Request::is('install/admin')) active @elseif(Request::is('install/complete')) completed @endif">
+                <div class="step-circle">
+                    @if(Request::is('install/admin')) 3
+                    @elseif(Request::is('install/complete')) <i class="material-icons-outlined">check</i>
+                    @else 3 @endif
+                </div>
+                <span class="step-label">Admin Setup</span>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step @if(Request::is('install/complete')) active @endif">
+                <div class="step-circle">
+                    @if(Request::is('install/complete')) 4 @else 4 @endif
+                </div>
+                <span class="step-label">Complete</span>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Card Content -->
+    <div class="p-4 p-md-5 installer-card">
+        @yield('content')
+    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const forms = document.querySelectorAll('form');
+    <div class="mt-4 text-center text-secondary small">
+        {{ config('app.name') }} Installer &copy; {{ date('Y') }}
+    </div>
+</div>
 
-            forms.forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    const inputs = this.querySelectorAll('input[required]');
-                    let valid = true;
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-                    inputs.forEach(input => {
-                        input.classList.remove('is-invalid');
-                        const existingFeedback = input.parentNode.querySelector('.invalid-feedback');
-                        if (existingFeedback) existingFeedback.remove();
+<script>
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('form');
 
-                        if (!input.value.trim()) {
-                            valid = false;
-                            input.classList.add('is-invalid');
-                            const errorMsg = document.createElement('div');
-                            errorMsg.className = 'invalid-feedback';
-                            errorMsg.textContent = 'This field is required';
-                            input.parentNode.appendChild(errorMsg);
-                        }
-                    });
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const inputs = this.querySelectorAll('input[required]');
+                let valid = true;
 
-                    if (!valid) {
-                        e.preventDefault();
-                        e.stopPropagation();
+                inputs.forEach(input => {
+                    input.classList.remove('is-invalid');
+                    const existingFeedback = input.parentNode.querySelector('.invalid-feedback');
+                    if (existingFeedback) existingFeedback.remove();
+
+                    if (!input.value.trim()) {
+                        valid = false;
+                        input.classList.add('is-invalid');
+                        const errorMsg = document.createElement('div');
+                        errorMsg.className = 'invalid-feedback';
+                        errorMsg.textContent = 'This field is required';
+                        input.parentNode.appendChild(errorMsg);
                     }
-                }, false);
-            });
+                });
+
+                if (!valid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, false);
         });
-    </script>
+    });
 
-    <script>
-        // ✅ Password toggle
-        document.getElementById('togglePassword').addEventListener('click', function () {
-            const passwordInput = document.getElementById('db_pass');
-            const icon = document.getElementById('toggleIcon');
-            const isVisible = passwordInput.type === 'text';
-
-            passwordInput.type = isVisible ? 'password' : 'text';
+    // Password toggle
+    document.querySelectorAll('[data-toggle-password]').forEach(button => {
+        button.addEventListener('click', function () {
+            const targetInput = document.querySelector(this.dataset.target);
+            const icon = this.querySelector('i');
+            const isVisible = targetInput.type === 'text';
+            targetInput.type = isVisible ? 'password' : 'text';
             icon.textContent = isVisible ? 'visibility_off' : 'visibility';
         });
+    });
+</script>
 
-        // ✅ Bootstrap validation
-        (function () {
-            'use strict';
-            const form = document.querySelector('.needs-validation');
-            if (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            }
-        })();
-    </script>
 </body>
 </html>
