@@ -27,7 +27,7 @@
                         <span class="material-icons">label</span>
                     </span>
                     <input type="text" id="app_name" name="app_name" class="form-control"
-                        placeholder="e.g., Relief Hub Pro" required>
+                        placeholder="e.g., MyApp" required>
                     <div class="invalid-feedback">Application Name is required.</div>
                 </div>
             </div>
@@ -126,7 +126,7 @@
                         <span class="material-icons">dvr</span>
                     </span>
                     <input type="text" id="db_name" name="db_name" class="form-control"
-                        value="relief_hub_pro" required>
+                        value="my_app_database" required>
                     <div class="invalid-feedback">Database Name is required.</div>
                 </div>
             </div>
