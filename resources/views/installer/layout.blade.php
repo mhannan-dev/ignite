@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }} - Installation Wizard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <!-- Alpine.js -->
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-
+    
+    <!-- Font Awesome Free -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <style>
         body {
@@ -21,7 +23,7 @@
         .installer-card {
             border-radius: 12px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
-                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                        0 4px 6px -2px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             background-color: white;
         }
@@ -65,6 +67,7 @@
             margin-bottom: 8px;
             background-color: #e5e7eb;
             color: #6b7280;
+            font-size: 1rem;
         }
 
         .step.active .step-circle {
@@ -87,19 +90,13 @@
             color: #0d6efd;
             font-weight: 500;
         }
-
-        .input-group .btn i {
-            cursor: pointer;
-        }
     </style>
 </head>
-
 <body class="d-flex justify-content-center align-items-center p-4">
-
     <div class="container-md" style="max-width: 768px;">
         <div class="mb-5 text-center">
             <div class="d-flex justify-content-center align-items-center mb-3">
-                <span class="material-icons-outlined me-2 fs-3 text-primary">handshake</span>
+                <span class="fa-solid fa-handshake me-2 fs-3 text-primary"></span>
                 <h1 class="h3 fw-bold text-dark mb-0">{{ config('app.name') }}</h1>
             </div>
             <p class="text-secondary">Installation Wizard</p>
@@ -107,26 +104,24 @@
             <!-- Step Indicator -->
             <div class="step-indicator">
                 <!-- Step 1 -->
-                <div
-                    class="step @if (Request::is('install/requirements')) active @elseif(Request::is('install/database') || Request::is('install/admin') || Request::is('install/complete')) completed @endif">
+                <div class="step @if(Request::is('install/requirements')) active @elseif(Request::is('install/database') || Request::is('install/admin') || Request::is('install/complete')) completed @endif">
                     <div class="step-circle">
-                        @if (Request::is('install/requirements'))
+                        @if(Request::is('install/requirements'))
                             1
                         @else
-                            <i class="material-icons-outlined">check</i>
+                            <i class="fa-solid fa-check"></i>
                         @endif
                     </div>
                     <span class="step-label">Requirements</span>
                 </div>
 
                 <!-- Step 2 -->
-                <div
-                    class="step @if (Request::is('install/database')) active @elseif(Request::is('install/admin') || Request::is('install/complete')) completed @endif">
+                <div class="step @if(Request::is('install/database')) active @elseif(Request::is('install/admin') || Request::is('install/complete')) completed @endif">
                     <div class="step-circle">
-                        @if (Request::is('install/database'))
+                        @if(Request::is('install/database'))
                             2
                         @elseif(Request::is('install/admin') || Request::is('install/complete'))
-                            <i class="material-icons-outlined">check</i>
+                            <i class="fa-solid fa-check"></i>
                         @else
                             2
                         @endif
@@ -135,13 +130,12 @@
                 </div>
 
                 <!-- Step 3 -->
-                <div
-                    class="step @if (Request::is('install/admin')) active @elseif(Request::is('install/complete')) completed @endif">
+                <div class="step @if(Request::is('install/admin')) active @elseif(Request::is('install/complete')) completed @endif">
                     <div class="step-circle">
-                        @if (Request::is('install/admin'))
+                        @if(Request::is('install/admin'))
                             3
                         @elseif(Request::is('install/complete'))
-                            <i class="material-icons-outlined">check</i>
+                            <i class="fa-solid fa-check"></i>
                         @else
                             3
                         @endif
@@ -150,9 +144,9 @@
                 </div>
 
                 <!-- Step 4 -->
-                <div class="step @if (Request::is('install/complete')) active @endif">
+                <div class="step @if(Request::is('install/complete')) active @endif">
                     <div class="step-circle">
-                        @if (Request::is('install/complete'))
+                        @if(Request::is('install/complete'))
                             4
                         @else
                             4
@@ -173,12 +167,10 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
-        // Form validation
         document.addEventListener('DOMContentLoaded', function() {
             const forms = document.querySelectorAll('form');
 
@@ -189,8 +181,7 @@
 
                     inputs.forEach(input => {
                         input.classList.remove('is-invalid');
-                        const existingFeedback = input.parentNode.querySelector(
-                            '.invalid-feedback');
+                        const existingFeedback = input.parentNode.querySelector('.invalid-feedback');
                         if (existingFeedback) existingFeedback.remove();
 
                         if (!input.value.trim()) {
@@ -210,19 +201,33 @@
                 }, false);
             });
         });
-
-        // Password toggle
-        document.querySelectorAll('[data-toggle-password]').forEach(button => {
-            button.addEventListener('click', function() {
-                const targetInput = document.querySelector(this.dataset.target);
-                const icon = this.querySelector('i');
-                const isVisible = targetInput.type === 'text';
-                targetInput.type = isVisible ? 'password' : 'text';
-                icon.textContent = isVisible ? 'visibility_off' : 'visibility';
-            });
-        });
     </script>
 
-</body>
+    <script>
+        // ✅ Password toggle
+        document.getElementById('togglePassword')?.addEventListener('click', function () {
+            const passwordInput = document.getElementById('db_pass');
+            const icon = document.getElementById('toggleIcon');
+            const isVisible = passwordInput.type === 'text';
 
+            passwordInput.type = isVisible ? 'password' : 'text';
+            icon.className = isVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+        });
+
+        // ✅ Bootstrap validation
+        (function () {
+            'use strict';
+            const form = document.querySelector('.needs-validation');
+            if (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            }
+        })();
+    </script>
+</body>
 </html>

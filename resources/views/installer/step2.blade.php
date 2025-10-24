@@ -3,7 +3,7 @@
 @section('content')
 
     <h3 class="d-flex align-items-center mb-4 h5 text-dark">
-        <i class="material-icons-outlined me-2 text-primary" style="font-size: 1.2em;">settings</i> Application Setup
+        <i class="fa-solid fa-gear me-2 text-primary" style="font-size: 1.2em;"></i> Application Setup
     </h3>
 
     <form action="{{ route('install.environment.set') }}" method="post" class="needs-validation" novalidate>
@@ -25,7 +25,7 @@
                 <label for="app_name" class="form-label small fw-medium text-secondary">Application Name</label>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i class="material-icons-outlined">label</i>
+                        <i class="fa-solid fa-tag"></i>
                     </span>
                     <input type="text" id="app_name" name="app_name" class="form-control"
                         placeholder="e.g., MyApp" required>
@@ -43,7 +43,7 @@
                 <label for="domain_name" class="form-label small fw-medium text-secondary">Domain Name (Current Host)<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i class="material-icons-outlined">language</i>
+                        <i class="fa-solid fa-globe"></i>
                     </span>
                     <input type="text" id="domain_name" name="domain_name" class="form-control"
                         value="{{ request()->getHost() }}" required>
@@ -55,7 +55,7 @@
                 <label for="codecanyon_username" class="form-label small fw-medium text-secondary">CodeCanyon Username<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i class="material-icons-outlined">person</i>
+                        <i class="fa-solid fa-user"></i>
                     </span>
                     <input type="text" id="codecanyon_username" name="codecanyon_username" class="form-control"
                         placeholder="Your Envato Username" required>
@@ -69,7 +69,7 @@
                 <label for="codecanyon_license_key" class="form-label small fw-medium text-secondary">CodeCanyon License Key</label>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i class="material-icons-outlined">vpn_key</i>
+                        <i class="fa-solid fa-key"></i>
                     </span>
                     <input type="text" id="codecanyon_license_key" name="codecanyon_license_key" class="form-control"
                         placeholder="Purchase Code (e.g., 1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p)" required>
@@ -88,7 +88,7 @@
                 <label for="db_host" class="form-label small fw-medium text-secondary">Database Host<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i class="material-icons-outlined">storage</i>
+                        <i class="fa-solid fa-database"></i>
                     </span>
                     <input type="text" id="db_host" name="db_host" class="form-control"
                         value="127.0.0.1" required>
@@ -100,7 +100,7 @@
                 <label for="db_port" class="form-label small fw-medium text-secondary">Database Port<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i class="material-icons-outlined">settings_input_component</i>
+                        <i class="fa-solid fa-plug"></i>
                     </span>
                     <input type="text" id="db_port" name="db_port" class="form-control"
                         value="3306" required>
@@ -112,7 +112,7 @@
                 <label for="db_user" class="form-label small fw-medium text-secondary">Database User<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i class="material-icons-outlined">account_circle</i>
+                        <i class="fa-solid fa-user-circle"></i>
                     </span>
                     <input type="text" id="db_user" name="db_user" class="form-control"
                         value="root" required>
@@ -126,7 +126,7 @@
                 <label for="db_name" class="form-label small fw-medium text-secondary">Database Name<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i class="material-icons-outlined">dvr</i>
+                        <i class="fa-solid fa-hdd"></i>
                     </span>
                     <input type="text" id="db_name" name="db_name" class="form-control"
                         value="my_app_database" required>
@@ -139,11 +139,11 @@
                 <label for="db_pass" class="form-label small fw-medium text-secondary">Database Password<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i class="material-icons-outlined">lock</i>
+                        <i class="fa-solid fa-lock"></i>
                     </span>
                     <input type="password" id="db_pass" name="db_pass" class="form-control" value="11111111">
                     <button type="button" class="btn btn-outline-secondary" id="togglePassword" tabindex="-1">
-                        <i class="material-icons-outlined" id="toggleIcon">visibility_off</i>
+                        <i class="fa-solid fa-eye-slash" id="toggleIcon"></i>
                     </button>
                 </div>
                 <div class="form-text">Leave blank if no password is set.</div>
@@ -153,7 +153,7 @@
         <div class="d-flex justify-content-end pt-3">
             <button type="submit" class="btn btn-primary d-flex align-items-center px-4 py-2">
                 Connect Application to Database
-                <i class="material-icons-outlined ms-2" style="font-size: 1.2em;">arrow_right_alt</i>
+                <i class="fa-solid fa-arrow-right ms-2" style="font-size: 1.2em;"></i>
             </button>
         </div>
     </form>
@@ -168,7 +168,7 @@
             toggleBtn.addEventListener('click', function () {
                 const type = passwordInput.type === 'password' ? 'text' : 'password';
                 passwordInput.type = type;
-                toggleIcon.textContent = type === 'password' ? 'visibility_off' : 'visibility';
+                toggleIcon.className = type === 'password' ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
             });
         });
     </script>

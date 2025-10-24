@@ -7,7 +7,7 @@
     @endphp
 
     <h2 class="d-flex align-items-center mb-4 h4 text-dark">
-        <i class="material-icons-outlined me-2 text-primary" style="font-size: 1.25em;">person_add</i> Create Administrator Account
+        <i class="fa-solid fa-user-plus me-2 text-primary" style="font-size: 1.25em;"></i> Create Administrator Account
     </h2>
 
     <div class="mb-4 text-sm text-secondary">
@@ -16,7 +16,7 @@
 
     @if (!$dbSetupComplete)
         <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
-            <i class="material-icons-outlined me-2" style="font-size: 1.5em;">warning</i>
+            <i class="fa-solid fa-triangle-exclamation me-2" style="font-size: 1.5em;"></i>
             <div>
                 The application database is not yet set up. Click the button below to run migrations and seeding.
             </div>
@@ -25,12 +25,12 @@
         <form action="{{ route('install.database.setup') }}" method="post" class="text-center pt-3">
             @csrf
             <button type="submit" class="btn btn-success btn-lg d-flex align-items-center justify-content-center mx-auto px-5 py-3">
-                <i class="material-icons-outlined me-2" style="font-size: 1.5em;">cloud_upload</i> Setup Database & Continue
+                <i class="fa-solid fa-cloud-arrow-up me-2" style="font-size: 1.5em;"></i> Setup Database & Continue
             </button>
         </form>
     @else
         <div class="alert alert-success d-flex align-items-center mb-4 py-2" role="alert">
-            <i class="material-icons-outlined me-2" style="font-size: 1.1em;">check_circle</i>
+            <i class="fa-solid fa-circle-check me-2" style="font-size: 1.1em;"></i>
             <div>Database setup completed successfully. Please create the admin account now.</div>
         </div>
 
@@ -64,7 +64,7 @@
                             class="form-control" required>
                         <span class="input-group-text bg-transparent border-start-0" style="cursor: pointer;"
                               onclick="togglePassword('password', this)">
-                            <i class="material-icons-outlined">visibility_off</i>
+                            <i class="fa-solid fa-eye-slash"></i>
                         </span>
                     </div>
                     <div class="invalid-feedback">Password is required.</div>
@@ -77,7 +77,7 @@
                             class="form-control" required>
                         <span class="input-group-text bg-transparent border-start-0" style="cursor: pointer;"
                               onclick="togglePassword('password_confirmation', this)">
-                            <i class="material-icons-outlined">visibility_off</i>
+                            <i class="fa-solid fa-eye-slash"></i>
                         </span>
                     </div>
                     <div class="invalid-feedback">Confirmation password is required.</div>
@@ -87,28 +87,28 @@
             <!-- Security Recommendations -->
             <div class="alert alert-info py-3" role="alert">
                 <h4 class="d-flex align-items-center mb-2 h6 text-info">
-                    <i class="material-icons-outlined me-2" style="font-size: 1.2em;">security</i> Security Recommendations
+                    <i class="fa-solid fa-shield-halved me-2" style="font-size: 1.2em;"></i> Security Recommendations
                 </h4>
                 <ul class="list-unstyled mb-0 ms-2 text-sm">
                     <li class="d-flex align-items-center mb-1">
-                        <i class="material-icons-outlined me-2" style="font-size: 1em;">done</i> Use a strong, unique password
+                        <i class="fa-solid fa-check me-2" style="font-size: 1em;"></i> Use a strong, unique password
                     </li>
                     <li class="d-flex align-items-center mb-1">
-                        <i class="material-icons-outlined me-2" style="font-size: 1em;">done</i> Include uppercase, lowercase, numbers, and symbols
+                        <i class="fa-solid fa-check me-2" style="font-size: 1em;"></i> Include uppercase, lowercase, numbers, and symbols
                     </li>
                     <li class="d-flex align-items-center">
-                        <i class="material-icons-outlined me-2" style="font-size: 1em;">done</i> Avoid using personal information
+                        <i class="fa-solid fa-check me-2" style="font-size: 1em;"></i> Avoid using personal information
                     </li>
                 </ul>
             </div>
 
             <div class="d-flex justify-content-between align-items-center pt-3">
                 <a href="{{ url()->previous() }}" class="btn btn-link text-decoration-none d-flex align-items-center">
-                    <i class="material-icons-outlined me-2" style="font-size: 1.2em;">arrow_back</i> Back
+                    <i class="fa-solid fa-arrow-left me-2" style="font-size: 1.2em;"></i> Back
                 </a>
 
                 <button type="submit" class="btn btn-primary d-flex align-items-center px-4 py-2">
-                    Create Account <i class="material-icons-outlined ms-2" style="font-size: 1.2em;">person_add_alt_1</i>
+                    Create Account <i class="fa-solid fa-user-plus ms-2" style="font-size: 1.2em;"></i>
                 </button>
             </div>
         </form>
@@ -118,9 +118,9 @@
         // Password visibility toggle
         function togglePassword(fieldId, iconElement) {
             const input = document.getElementById(fieldId);
-            const icon = iconElement.querySelector('.material-icons-outlined');
+            const icon = iconElement.querySelector('i');
             input.type = input.type === 'password' ? 'text' : 'password';
-            icon.textContent = input.type === 'password' ? 'visibility_off' : 'visibility';
+            icon.className = input.type === 'password' ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
         }
 
         // Bootstrap validation
