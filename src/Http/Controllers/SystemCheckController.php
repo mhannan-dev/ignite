@@ -123,7 +123,7 @@ class SystemCheckController extends Controller
 
             Log::info('Database connection test successful', ['host' => $envData['DB_HOST'], 'database' => $envData['DB_DATABASE']]);
             $request->session()->put('installer_data', $envData);
-            return redirect()->route('install.admin.form')->with('success', 'Environment settings saved and database connected successfully.');
+            return redirect()->route('install.admin.step3')->with('success', 'Environment settings saved and database connected successfully.');
         } catch (Exception $e) {
             Log::error('Environment setup failed: ' . $e->getMessage());
             return back()->with('error', $e->getMessage())->withInput();
@@ -159,7 +159,7 @@ class SystemCheckController extends Controller
 
             $request->session()->put('db_migration_complete', true);
 
-            return redirect()->route('install.admin.form')->with('success', 'Database setup completed successfully. Please create the administrator account.');
+            return redirect()->route('install.admin.step3')->with('success', 'Database setup completed successfully. Please create the administrator account.');
         } catch (Exception $e) {
             Log::error('DB migration setup failed: ' . $e->getMessage());
             return back()->with('error', $e->getMessage())->withInput();

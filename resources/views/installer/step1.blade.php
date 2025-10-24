@@ -1,20 +1,20 @@
 @extends('installer::installer.layout')
 
 @section('content')
-    <div class="mb-5 pb-3 border-bottom text-center">
-        <h2 class="h3 fw-bold text-dark mb-3 d-flex justify-content-center align-items-center">
+    <div class="pb-3 mb-5 text-center border-bottom">
+        <h2 class="mb-3 h3 fw-bold text-dark d-flex justify-content-center align-items-center">
             <i class="fa-solid fa-cloud-arrow-down me-2 text-primary" style="font-size: 1.25em;"></i>
             Welcome to {{ config('app.name') }} Installer
         </h2>
         <p class="text-secondary">This quick wizard will guide you through setting up your application.</p>
 
-        <div class="alert alert-info mt-4 mx-auto" style="max-width: 90%;">
-            <strong class="d-block mb-2">Before you start:</strong>
-            <ul class="list-unstyled mb-0 ms-3">
-                <li class="d-flex align-items-center mb-1">
+        <div class="mx-auto mt-4 alert alert-info" style="max-width: 90%;">
+            <strong class="mb-2 d-block">Before you start:</strong>
+            <ul class="mb-0 list-unstyled ms-3">
+                <li class="mb-1 d-flex align-items-center">
                     <i class="fa-solid fa-key me-2 text-info" style="font-size: 1.1em;"></i> Database credentials ready
                 </li>
-                <li class="d-flex align-items-center mb-1">
+                <li class="mb-1 d-flex align-items-center">
                     <i class="fa-solid fa-server me-2 text-info" style="font-size: 1.1em;"></i> Server meets requirements
                 </li>
                 <li class="d-flex align-items-center">
@@ -26,7 +26,7 @@
 
     <hr class="my-4">
 
-    <h3 class="d-flex align-items-center mb-4 h4 text-dark">
+    <h3 class="mb-4 d-flex align-items-center h4 text-dark">
         <i class="fa-solid fa-desktop me-2 text-primary" style="font-size: 1.25em;"></i>
         System Requirements
     </h3>
@@ -37,7 +37,7 @@
 
     <div class="mb-4 border-top border-bottom">
         @foreach ($requirements as $key => $status)
-            <div class="row g-0 py-2 requirement-item border-bottom">
+            <div class="py-2 row g-0 requirement-item border-bottom">
                 <div class="col-8 fw-medium">{{ $key }}</div>
                 <div class="col-4 text-end">
                     @if ($status)
@@ -55,24 +55,24 @@
     </div>
 
     @if (in_array(false, $requirements))
-        <div class="alert alert-warning d-flex align-items-center py-2">
+        <div class="py-2 alert alert-warning d-flex align-items-center">
             <i class="fa-solid fa-triangle-exclamation me-2" style="font-size: 1.1em;"></i>
             <div>
                 One or more requirements are not met. Please resolve these issues before proceeding.
             </div>
         </div>
-        <div class="text-center mt-4">
+        <div class="mt-4 text-center">
             <button class="btn btn-secondary btn-lg" disabled>
                 Resolve Requirements to Start
             </button>
         </div>
     @else
-        <div class="alert alert-success d-flex align-items-center py-2">
+        <div class="py-2 alert alert-success d-flex align-items-center">
             <i class="fa-solid fa-circle-check me-2" style="font-size: 1.1em;"></i>
             <div>All system requirements are met.</div>
         </div>
-        <div class="text-center mt-4">
-            <a href="{{ route('install.database') }}" class="btn btn-primary btn-lg d-flex align-items-center justify-content-center mx-auto" style="max-width: 300px;">
+        <div class="mt-4 text-center">
+            <a href="{{ route('install.step2') }}" class="mx-auto btn btn-primary btn-lg d-flex align-items-center justify-content-center" style="max-width: 300px;">
                 Start Installation
                 <i class="fa-solid fa-arrow-right ms-2" style="font-size: 1.2em;"></i>
             </a>
