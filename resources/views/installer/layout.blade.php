@@ -6,7 +6,9 @@
     <title>{{ config('app.name') }} - Installation Wizard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- ✅ Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
     <style>
         body {
@@ -15,13 +17,12 @@
         }
 
         .installer-card {
-            /* Mimic original card styling */
             border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+                        0 4px 6px -2px rgba(0, 0, 0, 0.05);
             overflow: hidden;
-            background-color: white; /* Ensure white background */
+            background-color: white;
         }
-
 
         .step-indicator {
             display: flex;
@@ -44,11 +45,11 @@
             left: 60px;
             width: 60px;
             height: 2px;
-            background-color: #d1d5db; /* Gray line */
+            background-color: #d1d5db;
         }
 
         .step.active:not(:last-child):after {
-            background-color: #0d6efd; /* Bootstrap primary blue */
+            background-color: #0d6efd;
         }
 
         .step-circle {
@@ -60,70 +61,100 @@
             justify-content: center;
             font-weight: 600;
             margin-bottom: 8px;
-            background-color: #e5e7eb; /* Light gray */
-            color: #6b7280; /* Darker gray text */
+            background-color: #e5e7eb;
+            color: #6b7280;
         }
 
         .step.active .step-circle {
-            background-color: #0d6efd; /* Primary blue */
+            background-color: #0d6efd;
             color: white;
         }
 
         .step.completed .step-circle {
-            background-color: #198754; /* Success green */
+            background-color: #198754;
             color: white;
         }
 
         .step-label {
             font-size: 0.875rem;
-            color: #6b7280; /* Darker gray text */
+            color: #6b7280;
             text-align: center;
         }
 
         .step.active .step-label {
-            color: #0d6efd; /* Primary blue */
+            color: #0d6efd;
             font-weight: 500;
         }
-
-        /* End Step Indicator Custom Styling */
     </style>
 </head>
 <body class="d-flex justify-content-center align-items-center p-4">
-    
-    <div class="container-md" style="max-width: 768px;"> <div class="mb-5 text-center">
+    <div class="container-md" style="max-width: 768px;">
+        <div class="mb-5 text-center">
             <div class="d-flex justify-content-center align-items-center mb-3">
-                <i class="me-3 fs-3 text-primary fa-solid fa-hands-helping"></i> <h1 class="h3 fw-bold text-dark">{{ config('app.name') }}</h1> </div>
+                <span class="material-icons-outlined me-2 fs-3 text-primary">handshake</span>
+                <h1 class="h3 fw-bold text-dark mb-0">{{ config('app.name') }}</h1>
+            </div>
             <p class="text-secondary">Installation Wizard</p>
 
+            <!-- Step Indicator -->
             <div class="step-indicator">
+                <!-- Step 1 -->
                 <div class="step @if(Request::is('install/requirements')) active @elseif(Request::is('install/database') || Request::is('install/admin') || Request::is('install/complete')) completed @endif">
                     <div class="step-circle">
-                        @if(Request::is('install/requirements')) 1 @else <i class="fas fa-check"></i> @endif
+                        @if(Request::is('install/requirements'))
+                            1
+                        @else
+                            <span class="material-icons-outlined">check</span>
+                        @endif
                     </div>
                     <span class="step-label">Requirements</span>
                 </div>
+
+                <!-- Step 2 -->
                 <div class="step @if(Request::is('install/database')) active @elseif(Request::is('install/admin') || Request::is('install/complete')) completed @endif">
                     <div class="step-circle">
-                        @if(Request::is('install/database')) 2 @elseif(Request::is('install/admin') || Request::is('install/complete')) <i class="fas fa-check"></i> @else 2 @endif
+                        @if(Request::is('install/database'))
+                            2
+                        @elseif(Request::is('install/admin') || Request::is('install/complete'))
+                            <span class="material-icons-outlined">check</span>
+                        @else
+                            2
+                        @endif
                     </div>
                     <span class="step-label">Database</span>
                 </div>
+
+                <!-- Step 3 -->
                 <div class="step @if(Request::is('install/admin')) active @elseif(Request::is('install/complete')) completed @endif">
                     <div class="step-circle">
-                        @if(Request::is('install/admin')) 3 @elseif(Request::is('install/complete')) <i class="fas fa-check"></i> @else 3 @endif
+                        @if(Request::is('install/admin'))
+                            3
+                        @elseif(Request::is('install/complete'))
+                            <span class="material-icons-outlined">check</span>
+                        @else
+                            3
+                        @endif
                     </div>
                     <span class="step-label">Admin Setup</span>
                 </div>
+
+                <!-- Step 4 -->
                 <div class="step @if(Request::is('install/complete')) active @endif">
                     <div class="step-circle">
-                        @if(Request::is('install/complete')) 4 @else 4 @endif
+                        @if(Request::is('install/complete'))
+                            4
+                        @else
+                            4
+                        @endif
                     </div>
                     <span class="step-label">Complete</span>
                 </div>
             </div>
         </div>
 
-        <div class="p-4 p-md-5 installer-card"> @yield('content')
+        <!-- Card Content -->
+        <div class="p-4 p-md-5 installer-card">
+            @yield('content')
         </div>
 
         <div class="mt-4 text-center text-secondary small">
@@ -134,7 +165,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
-        // Simple form validation - adapted to use Bootstrap's 'is-invalid' class and feedback
         document.addEventListener('DOMContentLoaded', function() {
             const forms = document.querySelectorAll('form');
 
@@ -144,34 +174,54 @@
                     let valid = true;
 
                     inputs.forEach(input => {
-                        // Clear previous validation state
                         input.classList.remove('is-invalid');
                         const existingFeedback = input.parentNode.querySelector('.invalid-feedback');
-                        if (existingFeedback) {
-                            existingFeedback.remove();
-                        }
+                        if (existingFeedback) existingFeedback.remove();
 
                         if (!input.value.trim()) {
                             valid = false;
                             input.classList.add('is-invalid');
-
-                            // Add error message using Bootstrap's invalid-feedback
                             const errorMsg = document.createElement('div');
                             errorMsg.className = 'invalid-feedback';
                             errorMsg.textContent = 'This field is required';
                             input.parentNode.appendChild(errorMsg);
                         }
-                        // Note: If input has content, the 'is-invalid' class is simply removed.
-                        // Bootstrap's validation works by adding/removing this class.
                     });
 
                     if (!valid) {
                         e.preventDefault();
-                        e.stopPropagation(); // Stop event bubbling
+                        e.stopPropagation();
                     }
                 }, false);
             });
         });
+    </script>
+
+    <script>
+        // ✅ Password toggle
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('db_pass');
+            const icon = document.getElementById('toggleIcon');
+            const isVisible = passwordInput.type === 'text';
+
+            passwordInput.type = isVisible ? 'password' : 'text';
+            icon.textContent = isVisible ? 'visibility_off' : 'visibility';
+        });
+
+        // ✅ Bootstrap validation
+        (function () {
+            'use strict';
+            const form = document.querySelector('.needs-validation');
+            if (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            }
+        })();
     </script>
 </body>
 </html>

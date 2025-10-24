@@ -2,7 +2,6 @@
 
 @section('content')
 
-
     <h3 class="d-flex align-items-center mb-4 h5 text-dark">
         <span class="material-icons me-2 text-primary" style="font-size: 1.2em;">settings</span> Application Setup
     </h3>
@@ -132,42 +131,28 @@
                 </div>
             </div>
 
+            <!-- ✅ Password Field with Toggle -->
             <div class="col-md-6">
                 <label for="db_pass" class="form-label small fw-medium text-secondary">Database Password<span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <span class="material-icons">lock</span>
                     </span>
-                    <input type="password" id="db_pass" name="db_pass" class="form-control"
-                        value="11111111">
+                    <input type="password" id="db_pass" name="db_pass" class="form-control" value="11111111">
+                    <button type="button" class="btn btn-outline-secondary" id="togglePassword" tabindex="-1">
+                        <span class="material-icons" id="toggleIcon">visibility_off</span>
+                    </button>
                 </div>
                 <div class="form-text">Leave blank if no password is set.</div>
             </div>
         </div>
 
         <div class="d-flex justify-content-end pt-3">
-            <button type="submit"
-                class="btn btn-primary d-flex align-items-center px-4 py-2">
+            <button type="submit" class="btn btn-primary d-flex align-items-center px-4 py-2">
                 Connect Application to Database
                 <span class="material-icons ms-2" style="font-size: 1.2em;">arrow_right_alt</span>
             </button>
         </div>
     </form>
 
-    <script>
-        // Custom validation for Bootstrap forms
-        (function () {
-            'use strict'
-            const form = document.querySelector('.needs-validation');
-            if (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            }
-        })()
-    </script>
 @endsection

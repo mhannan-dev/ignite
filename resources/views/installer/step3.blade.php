@@ -2,9 +2,8 @@
 
 @section('content')
 
-    {{-- Assume $dbSetupComplete is passed as boolean from controller --}}
     @php
-        $dbSetupComplete = session('db_migration_complete') ?? false; // Check session or actual status
+        $dbSetupComplete = session('db_migration_complete') ?? false;
     @endphp
 
     <h2 class="d-flex align-items-center mb-4 h4 text-dark">
@@ -15,9 +14,6 @@
         Create the initial administrator account for accessing the <strong>{{ config('app.name') }}</strong> system.
     </div>
 
-    {{-- ---------------------------------------------------------------- --}}
-    {{-- A. DATABASE MIGRATION BUTTON (If not completed) --}}
-    {{-- ---------------------------------------------------------------- --}}
     @if (!$dbSetupComplete)
         <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
             <span class="material-icons me-2" style="font-size: 1.5em;">warning</span>
@@ -33,11 +29,6 @@
             </button>
         </form>
     @else
-
-    {{-- ---------------------------------------------------------------- --}}
-    {{-- B. ADMIN CREATION FORM (If migration is successful) --}}
-    {{-- ---------------------------------------------------------------- --}}
-
         <div class="alert alert-success d-flex align-items-center mb-4 py-2" role="alert">
             <span class="material-icons me-2" style="font-size: 1.1em;">check_circle</span>
             <div>Database setup completed successfully. Please create the admin account now.</div>
@@ -63,17 +54,29 @@
             </div>
 
             <div class="row g-3 mb-3">
-                <div class="col-md-6">
+                <div class="col-md-6 position-relative">
                     <label for="password" class="form-label small fw-medium text-secondary">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Password"
-                        class="form-control" required>
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" placeholder="Password"
+                            class="form-control" required>
+                        <span class="input-group-text bg-transparent border-start-0" style="cursor: pointer;"
+                              onclick="togglePassword('password', this)">
+                            <span class="material-icons">visibility_off</span>
+                        </span>
+                    </div>
                     <div class="invalid-feedback">Password is required.</div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-6 position-relative">
                     <label for="password_confirmation" class="form-label small fw-medium text-secondary">Confirm Password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password"
-                        class="form-control" required>
+                    <div class="input-group">
+                        <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password"
+                            class="form-control" required>
+                        <span class="input-group-text bg-transparent border-start-0" style="cursor: pointer;"
+                              onclick="togglePassword('password_confirmation', this)">
+                            <span class="material-icons">visibility_off</span>
+                        </span>
+                    </div>
                     <div class="invalid-feedback">Confirmation password is required.</div>
                 </div>
             </div>
@@ -94,6 +97,7 @@
                     </li>
                 </ul>
             </div>
+
             <div class="d-flex justify-content-between align-items-center pt-3">
                 <a href="{{ url()->previous() }}" class="btn btn-link text-decoration-none d-flex align-items-center">
                     <span class="material-icons me-2" style="font-size: 1.2em;">arrow_back</span> Back
@@ -107,6 +111,20 @@
     @endif
 
     <script>
+        // Password visibility toggle
+        function togglePassword(fieldId, iconElement) {
+            const input = document.getElementById(fieldId);
+            const icon = iconElement.querySelector('.material-icons');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility_off';
+            }
+        }
+
+        // Bootstrap validation
         (function () {
             'use strict'
             const form = document.querySelector('.needs-validation');
