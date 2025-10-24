@@ -229,5 +229,45 @@
             }
         })();
     </script>
+
+     <!-- ✅ Password Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleBtn = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('db_pass');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            toggleBtn.addEventListener('click', function () {
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                toggleIcon.className = type === 'password' ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+            });
+        });
+    </script>
+
+     <script>
+        // Password visibility toggle
+        function togglePassword(fieldId, iconElement) {
+            const input = document.getElementById(fieldId);
+            const icon = iconElement.querySelector('i');
+            input.type = input.type === 'password' ? 'text' : 'password';
+            icon.className = input.type === 'password' ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+        }
+
+        // Bootstrap validation
+        (function () {
+            'use strict'
+            const form = document.querySelector('.needs-validation');
+            if (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            }
+        })()
+    </script>
 </body>
 </html>

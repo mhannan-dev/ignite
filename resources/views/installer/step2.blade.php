@@ -129,7 +129,7 @@
                         <i class="fa-solid fa-hdd"></i>
                     </span>
                     <input type="text" id="db_name" name="db_name" class="form-control"
-                        value="my_app_database" required>
+                        placeholder="my_app_database" required>
                     <div class="invalid-feedback">Database Name is required.</div>
                 </div>
             </div>
@@ -158,19 +158,6 @@
         </div>
     </form>
 
-    <!-- ✅ Password Toggle Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const toggleBtn = document.getElementById('togglePassword');
-            const passwordInput = document.getElementById('db_pass');
-            const toggleIcon = document.getElementById('toggleIcon');
-
-            toggleBtn.addEventListener('click', function () {
-                const type = passwordInput.type === 'password' ? 'text' : 'password';
-                passwordInput.type = type;
-                toggleIcon.className = type === 'password' ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-            });
-        });
-    </script>
+   
 
 @endsection
